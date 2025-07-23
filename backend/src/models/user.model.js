@@ -20,7 +20,27 @@ async function create(username, email, password) {
   return rows[0]; // Returns the newly created user object
 }
 
+async function getUser(email, password) {
+  const userQuery = "SELECT * FROM users WHERE email = $1";
+  const { rows } = await pool.query(userQuery, [email]);
+  const user = rows[0];
+
+  if (!user) {
+    return null;
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    return null;
+  }
+
+  delete user.password;
+  return user;
+}
+
 module.exports = {
   findOne,
   create,
+  getUser,
 };
