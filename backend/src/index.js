@@ -1,10 +1,12 @@
 const express = require("express");
 const authRoutes = require("./api/routes/auth.routes.js");
+const taskRoutes = require("./api/routes/task.routes.js");
 
 const app = express();
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
 const PORT = process.env.PORT || 3001;
 
