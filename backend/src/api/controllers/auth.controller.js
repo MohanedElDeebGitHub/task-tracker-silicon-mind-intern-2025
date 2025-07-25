@@ -1,4 +1,3 @@
-const { pool } = require("../../config/db.js");
 const { findOne, create, getUser } = require("../../models/user.model.js");
 const jwt = require("jsonwebtoken");
 

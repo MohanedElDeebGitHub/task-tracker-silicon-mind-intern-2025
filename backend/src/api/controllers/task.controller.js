@@ -2,17 +2,17 @@ const taskModel = require("../../models/task.model");
 
 async function createTask(req, res) {
   try {
-    const { title, description, status, estimate_hours } = req.body;
-
+    const { title, description, status } = req.body;
     const user_id = req.user.id;
 
-    if (!title) return res.status(400).json({ error: "No title" });
+    if (!title) {
+      return res.status(400).json({ error: "No title" });
+    }
 
     const newTask = await taskModel.create({
       title,
       description,
       status,
-      estimate_hours,
       user_id,
     });
 
@@ -26,13 +26,37 @@ async function createTask(req, res) {
 async function getAllTasks(req, res) {
   try {
     const user_id = req.user.id;
-
     const allTasks = await taskModel.findAllByUserId(user_id);
-
-    res.status(200).json(tasks);
+    res.status(200).json(allTasks);
   } catch (error) {
-    console.error("Error creating new task: ", error);
+    console.error("Error fetching tasks: ", error);
     res.status(500).json({ error: "internal server error" });
+  }
+}
+
+async function getTaskById(req, res) {
+  try {
+    const user_id = req.user.id;
+    const task_id = req.params.id;
+
+    const task = await taskModel.findById(task_id);
+
+    if (!task) {
+      return res
+        .status(404)
+        .json({ message: "Task with that ID doesn't exist." });
+    }
+
+    if (task.user_id !== user_id) {
+      return res
+        .status(403)
+        .json({ message: "You don't have access to this resource." });
+    }
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.error("Error retrieving task by id:  ", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 }
 
@@ -83,32 +107,6 @@ async function deleteTask(req, res) {
   } catch (error) {
     console.error("Error deleting task:", error);
     res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-async function getTaskById(req, res) {
-  try {
-    user_id = req.user.id;
-    task_id = req.task.id;
-
-    const task = taskModel.findById(task_id);
-
-    if (!task) {
-      return res
-        .status(404)
-        .json({ message: "Task with that ID does't exist." });
-    }
-
-    if (task.user_id !== user_id) {
-      return res
-        .status(403)
-        .json({ message: "You don't have access to this resource." });
-    }
-
-    res.status(200).json(task);
-  } catch (error) {
-    console.error("Error retrieving task by id:  ", error);
-    res.status(500).json({ error: "Internal server error." });
   }
 }
 

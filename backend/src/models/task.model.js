@@ -1,17 +1,12 @@
 const { pool } = require("../config/db.js");
 
-async function create({ title, description, status, estimate_hours, user_id }) {
+async function create({ title, description, status, user_id }) {
   const query = `
-    INSERT INTO tasks (title, description, status, estimate_hours, user_id) 
-    VALUES ($1, $2, $3, $4, $5) 
+    INSERT INTO tasks (title, description, status, user_id) 
+    VALUES ($1, $2, $3, $4) 
     RETURNING *`;
-  const values = [
-    title,
-    description,
-    status || "to-do",
-    estimate_hours,
-    user_id,
-  ];
+
+  const values = [title, description, status || "to-do", user_id];
   const { rows } = await pool.query(query, values);
   return rows[0];
 }
@@ -29,23 +24,13 @@ async function findById(id) {
   return rows[0];
 }
 
-async function update(
-  id,
-  { title, description, status, estimate_hours, total_duration },
-) {
+async function update(id, { title, description, status, total_duration }) {
   const query = `
     UPDATE tasks 
-    SET title = $1, description = $2, status = $3, estimate_hours = $4, total_duration = $5 
-    WHERE id = $6 
+    SET title = $1, description = $2, status = $3, total_duration = $4 
+    WHERE id = $5 
     RETURNING *`;
-  const values = [
-    title,
-    description,
-    status,
-    estimate_hours,
-    total_duration,
-    id,
-  ];
+  const values = [title, description, status, total_duration, id];
   const { rows } = await pool.query(query, values);
   return rows[0];
 }
