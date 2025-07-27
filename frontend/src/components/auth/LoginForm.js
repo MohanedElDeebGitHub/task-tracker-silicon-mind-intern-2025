@@ -39,7 +39,10 @@ function LoginForm({
 
           onChange={(e) => {
             setEmail(e.target.value);
-            if (error) setError(null); // Clear error on typing
+            if (error){
+              setError(null);
+              setLoginSuccess(null);
+            }
           }}
   
           icon="email"
@@ -52,7 +55,10 @@ function LoginForm({
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-            if (error) setError(null); // Clear error on typing
+            if (error){
+              setError(null);
+              setLoginSuccess(null);
+            }
           }}
           icon="password"
           error={passwordError}

@@ -36,6 +36,7 @@ export function LoginPage() {
       // window.location.href = 'dashboar';
 
     } catch (err) {
+      setLoginSuccess(null);
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -56,6 +57,7 @@ export function LoginPage() {
       setError={setError}
       handleLogin={handleLogin}
       loginSuccess={loginSuccess}
+      setLoginSuccess={setLoginSuccess}
     />
   </div>
 </div>
