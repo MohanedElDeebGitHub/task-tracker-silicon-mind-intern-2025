@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import InputField from './InputField';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,8 @@ function SignupForm({
   password, setPassword,
   isLoading, error, setError,
   usernameError, emailError, passwordError,
-  signupSuccess, setSignupSuccess
+  signupSuccess, setSignupSuccess,
+  handleSignup
 }) {
   return (
     <div className="">
@@ -24,7 +25,7 @@ function SignupForm({
 
       {signupSuccess && (
         <div className="alert alert-success" role="alert">
-          Sign Up Successful! You can now log in.
+          Sign Up Successful! Redirecting...
         </div>
       )}
 
@@ -90,6 +91,5 @@ function SignupForm({
 
 // You will need to pass handleSignup from the parent page
 // For now, this is a placeholder to avoid breaking the component
-const handleSignup = () => {};
 
 export default SignupForm;

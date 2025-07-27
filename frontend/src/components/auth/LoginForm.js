@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import InputField from './InputField';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ function LoginForm({
       {error && !emailError && !passwordError && (
         <>
           {console.log(error)}
-          <div class="alert alert-danger" role="alert">
+          <div className="alert alert-danger" role="alert">
             {typeof error === 'string' ? error : error?.message || 'An error occurred.'}
 
 </div>

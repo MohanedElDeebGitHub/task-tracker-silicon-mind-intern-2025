@@ -1,4 +1,4 @@
-const { findOne, create, getUser } = require("../../models/user.model.js");
+const { findOneByEmail, findOneByUsername, create, getUser } = require("../../models/user.model.js");
 const jwt = require("jsonwebtoken");
 
 async function register(req, res) {
@@ -9,10 +9,16 @@ async function register(req, res) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const existingUsers = await findOne(email, username);
-    if (existingUsers) {
-      return res.status(409).json({ error: "User already exists" });
+    const existingUsername = await findOneByUsername(username);
+    if (existingUsername) {
+      return res.status(409).json({ error: "Username already exists" });
     }
+
+    const existingEmail = await findOneByEmail(email);
+    if (existingEmail) {
+      return res.status(409).json({ error: "Email already used before" });
+    }
+
 
     const newUser = await create(username, email, password);
     return res.status(201).json({

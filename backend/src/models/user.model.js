@@ -2,9 +2,23 @@ const { pool } = require("../config/db.js");
 const bcrypt = require("bcrypt");
 
 // A function to find a user by their email or username (used for registration and login)
-async function findOne(email, username) {
+async function findOneByEmailUsername(email, username) {
   const query = "SELECT * FROM users WHERE email = $1 OR username = $2";
   const { rows } = await pool.query(query, [email, username]);
+
+  return rows[0];
+}
+
+async function findOneByEmail(email) {
+  const query = "SELECT * FROM users WHERE email = $1";
+  const { rows } = await pool.query(query, [email]);
+
+  return rows[0];
+}
+
+async function findOneByUsername(username) {
+  const query = "SELECT * FROM users WHERE username = $1";
+  const { rows } = await pool.query(query, [username]);
 
   return rows[0];
 }
@@ -40,7 +54,8 @@ async function getUser(email, password) {
 }
 
 module.exports = {
-  findOne,
+  findOneByEmail,
+  findOneByUsername,
   create,
   getUser,
 };

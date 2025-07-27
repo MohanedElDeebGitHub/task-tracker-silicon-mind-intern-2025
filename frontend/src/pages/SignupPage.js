@@ -34,6 +34,7 @@ export function SignupPage() {
       console.log("Sign up successful.", data);
 
     } catch (err) {
+      setSignupSuccess(null);
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -53,8 +54,10 @@ export function SignupPage() {
           setPassword={setPassword}
           isLoading={isLoading}
           error={error}
+          setError={setError}
           handleSignup={handleSignup}
           signupSuccess={signupSuccess}
+          setSignupSuccess={setSignupSuccess}
         />
       </div>
     </div>
