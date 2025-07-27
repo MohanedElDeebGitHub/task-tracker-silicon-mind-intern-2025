@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, InputGroup } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const iconMap = {
@@ -7,7 +7,7 @@ const iconMap = {
   password: 'bi-lock',
 };
 
-export default function InputField({ type, placeholder, value, onChange, icon }) {
+export default function InputField({ type, placeholder, value, onChange, icon, error }) {
   return (
     <div className="input-wrapper">
       <i className={`bi ${iconMap[icon]} input-icon`} />
@@ -16,9 +16,13 @@ export default function InputField({ type, placeholder, value, onChange, icon })
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        isInvalid={!!error}
         className="input-with-icon"
         autoComplete="off"
       />
+      <Form.Control.Feedback type="invalid">
+        {error}
+      </Form.Control.Feedback>
     </div>
   );
 }

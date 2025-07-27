@@ -8,6 +8,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault(); 
@@ -25,7 +26,12 @@ export function LoginPage() {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to login');
       }
+      
+      // Login successful
+      setLoginSuccess(true);
 
+      console.log("Sign in successful. Token saved.");
+      
       localStorage.setItem('authToken', data.token);
       // window.location.href = 'dashboar';
 
@@ -47,7 +53,9 @@ export function LoginPage() {
       setPassword={setPassword}
       isLoading={isLoading}
       error={error}
+      setError={setError}
       handleLogin={handleLogin}
+      loginSuccess={loginSuccess}
     />
   </div>
 </div>
