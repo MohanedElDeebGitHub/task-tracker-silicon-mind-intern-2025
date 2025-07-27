@@ -26,8 +26,8 @@ export function LoginPage() {
         throw new Error(data.error || 'Failed to login');
       }
 
-      // TODO: Store the token in localStorage or context
-      console.log('Login successful! Token:', data.token);
+      localStorage.setItem('authToken', data.token);
+      // window.location.href = 'dashboar';
 
     } catch (err) {
       setError(err.message);
