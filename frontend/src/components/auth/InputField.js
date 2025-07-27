@@ -3,6 +3,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const iconMap = {
+  username: 'bi-person',
   email: 'bi-envelope',
   password: 'bi-lock',
 };

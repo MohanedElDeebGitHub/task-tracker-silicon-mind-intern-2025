@@ -1,0 +1,95 @@
+import React from 'react';
+import { Form, Button, Spinner, Alert } from 'react-bootstrap';
+import InputField from './InputField';
+import { Link } from 'react-router-dom';
+
+function SignupForm({
+  username, setUsername,
+  email, setEmail,
+  password, setPassword,
+  isLoading, error, setError,
+  usernameError, emailError, passwordError,
+  signupSuccess, setSignupSuccess
+}) {
+  return (
+    <div className="">
+      <h2 className="">Create an Account</h2>
+      <p className="text-muted">Get started by creating your account.</p>
+
+      {error && !usernameError && !emailError && !passwordError && (
+        <div className="alert alert-danger" role="alert">
+          {typeof error === 'string' ? error : error?.message || 'An error occurred.'}
+        </div>
+      )}
+
+      {signupSuccess && (
+        <div className="alert alert-success" role="alert">
+          Sign Up Successful! You can now log in.
+        </div>
+      )}
+
+      <Form onSubmit={handleSignup}>
+        <InputField
+          type="username"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            if (error){
+              setError(null);
+              setSignupSuccess(null);
+            }
+          }}
+          icon="username"
+          error={usernameError}
+        />
+
+        <InputField
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error){
+              setError(null);
+              setSignupSuccess(null);
+            }
+          }}
+          icon="email"
+          error={emailError}
+        />
+
+        <InputField
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (error){
+              setError(null);
+              setSignupSuccess(null);
+            }
+          }}
+          icon="password"
+          error={passwordError}
+        />
+
+        <div className="d-grid mt-4">
+          <Button className="login-button" type="submit" disabled={isLoading}>
+            {isLoading ? <Spinner animation="border" size="sm" /> : 'Sign Up'}
+          </Button>
+        </div>
+      </Form>
+
+      <p className="signup-redirect">
+        Have an account? <Link to="/" className="navigation-link">Sign In</Link>
+      </p>
+    </div>
+  );
+}
+
+// You will need to pass handleSignup from the parent page
+// For now, this is a placeholder to avoid breaking the component
+const handleSignup = () => {};
+
+export default SignupForm;

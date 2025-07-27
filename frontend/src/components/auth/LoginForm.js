@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Spinner, Alert } from 'react-bootstrap';
 import InputField from './InputField';
+import { Link } from 'react-router-dom';
 
 function LoginForm({
   email, setEmail,
@@ -72,7 +73,7 @@ function LoginForm({
       </Form>
 
       <p className="signup-redirect">
-        Don't have an account? <a href="/register" className="register-link">Sign up</a>
+        Don't have an account? <Link to="/register" className="navigation-link">Sign up</Link>
       </p>
     </div>
   );
