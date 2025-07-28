@@ -1,18 +1,44 @@
-.SideBar {
-  width: 280px;
-  background-color: #0d1b2a; /* A dark blue for the SideBar */
-  flex-shrink: 0;
+.dashboard-layout{
+  display: flex;
+  flex-direction: row;
+
+  height: 100vh;
+  width: 100vw;
 }
 
-.main-content {
-  background-color: #f8f9fa;
+.SideBar {
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000000; /* A dark blue for the SideBar */
 }
 
 .user-profile {
+  color: aqua;
+  margin-top: auto;
+  margin-bottom: 3rem;
+  margin-left: 1rem;
+
+
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 1.2rem;
 }
+
+.main-content {
+  display: flex;
+
+  height: 100vh;
+  width: 100vw;
+
+  flex-direction: column;
+  background-color: #e5e6ea;
+
+  height: 100vh;
+}
+
+
 
 .user-icon {
   width: 40px;

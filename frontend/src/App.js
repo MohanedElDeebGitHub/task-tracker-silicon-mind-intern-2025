@@ -11,10 +11,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route 
-            path="/dashboard" 
-            element={<DashboardPage />} // Remove ProtectedRoute wrapper temporarily
-          /> 
+          <Route path="/dashboard" element={<DashboardPage />} /> 
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<SignupPage />} />
         </Routes>
