@@ -24,7 +24,16 @@ export function DashboardPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (!response.ok) throw new Error('Failed to fetch tasks');
+      if (response.status === 401) {
+        console.log('Unauthorized - redirecting to login');
+        localStorage.removeItem('authToken'); // Clear invalid token
+        navigate('/');
+        return;
+    }
+
+      if (!response.ok){
+        throw new Error('Failed to fetch tasks');
+      }
 
       const data = await response.json();
       setTasks(Array.isArray(data) ? data : []);
