@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { Form, Alert } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 function AddTaskForm({ show, onHide, onTaskAdded }) {
-  console.log('AddTaskForm rendered with show:', show);
-
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -14,29 +14,17 @@ function AddTaskForm({ show, onHide, onTaskAdded }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.title.trim()) {
-      setError('Title is required');
-      return;
-    }
-
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
       const token = localStorage.getItem('authToken');
-      
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
+      if (!token) throw new Error("No auth token found.");
 
       const response = await fetch('http://localhost:3001/api/tasks', {
         method: 'POST',
@@ -44,37 +32,18 @@ function AddTaskForm({ show, onHide, onTaskAdded }) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: formData.title.trim(),
-          description: formData.description.trim() || null,
-          status: formData.status
-        })
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create task');
+        throw new Error(errorData.message || "Failed to create task");
       }
 
       const newTask = await response.json();
-      
-      // Reset form
-      setFormData({
-        title: '',
-        description: '',
-        status: 'to-do'
-      });
-
-      // Call the callback to update the task list
-      if (onTaskAdded) {
-        onTaskAdded(newTask);
-      }
-      
-      // Close the modal
-      onHide();
-
+      onTaskAdded(newTask);
+      handleClose();
     } catch (err) {
-      console.error('Error creating task:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -82,25 +51,21 @@ function AddTaskForm({ show, onHide, onTaskAdded }) {
   };
 
   const handleClose = () => {
-    setFormData({
-      title: '',
-      description: '',
-      status: 'to-do'
-    });
+    setFormData({ title: '', description: '', status: 'to-do' });
     setError('');
     onHide();
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={handleClose} centered={true} animation={true}>
+      <Modal.Header>
         <Modal.Title>Create New Task</Modal.Title>
       </Modal.Header>
-      
+
       <Form onSubmit={handleSubmit}>
-        <Modal.Body>
+        <Modal.Body >
           {error && <Alert variant="danger">{error}</Alert>}
-          
+
           <Form.Group className="mb-3">
             <Form.Label>Title <span className="text-danger">*</span></Form.Label>
             <Form.Control
@@ -134,7 +99,6 @@ function AddTaskForm({ show, onHide, onTaskAdded }) {
               onChange={handleInputChange}
             >
               <option value="to-do">To-do</option>
-              <option value="in-progress">In Progress</option>
               <option value="done">Done</option>
             </Form.Select>
           </Form.Group>

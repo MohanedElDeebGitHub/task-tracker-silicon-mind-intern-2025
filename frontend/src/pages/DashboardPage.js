@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SideBar from '../components/dashboard/SideBar';
-import StatsBar from '../components/dashboard/StatsBar';
 import TaskList from '../components/dashboard/TaskList';
+import AddTaskForm from '../components/dashboard/AddTaskForm';
 import '../styles/dashboard.css';
 
 export function DashboardPage() {
@@ -11,28 +11,21 @@ export function DashboardPage() {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false); // was true
 
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('authToken');
+      if (!token) throw new Error("Authentication token not found.");
 
-      if (!token) {
-        throw new Error("Authentication token not found.");
-      }
-
-      const tasksResponse = await fetch('http://localhost:3001/api/tasks', {
+      const response = await fetch('http://localhost:3001/api/tasks', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
-      if (!tasksResponse.ok) throw new Error('Failed to fetch tasks');
-      
-      const tasksData = await tasksResponse.json();
-      
-      if (Array.isArray(tasksData)) {
-        setTasks(tasksData);
-      } else {
-        setTasks([]);
-      }
+
+      if (!response.ok) throw new Error('Failed to fetch tasks');
+
+      const data = await response.json();
+      setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Fetch error:', err);
       setError(err.message);
@@ -41,43 +34,45 @@ export function DashboardPage() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const init = async () => {
       setLoading(true);
       await fetchTasks();
       setLoading(false);
     };
-
-    fetchData();
+    init();
   }, []);
 
-  const handleTaskAdded = async (newTask) => {
-    // Option 1: Add the new task to existing list
-    setTasks(prevTasks => [newTask, ...prevTasks]);
-    
-    // Option 2: Or refresh the entire list
-    // await fetchTasks();
+  const handleTaskAdded = (newTask) => {
+    setTasks(prev => [newTask, ...prev]);
+    setShowAddModal(false);
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="dashboard-layout">
-      <div className='SideBar'>
-        <SideBar user={user} />
+    <>
+      <div className="dashboard-layout">
+        <div className='SideBar'>
+          <SideBar user={user} />
+        </div>
+        <div className="main-content">
+          <header>
+            <h2>Hello, {user.name} 👋</h2>
+          </header>
+          <TaskList 
+            tasks={tasks} 
+            onNewTaskClick={() => setShowAddModal(true)}
+          />
+        </div>
       </div>
 
-      <div className="main-content">
-        <header>
-          <h2>Hello, {user.name} 👋</h2>
-        </header>
-
-        <TaskList 
-          tasks={tasks} 
-          onTaskAdded={handleTaskAdded}
-        />
-      </div>
-    </div>
+      <AddTaskForm 
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        onTaskAdded={handleTaskAdded}
+      />
+    </>
   );
 }
 

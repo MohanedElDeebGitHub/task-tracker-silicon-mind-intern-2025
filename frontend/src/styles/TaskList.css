@@ -2,7 +2,7 @@
 .task-list-card {
   border-radius: 12px;
   margin: 1rem 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* Header styling */
