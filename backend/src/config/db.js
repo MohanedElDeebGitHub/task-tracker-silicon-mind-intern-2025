@@ -1,8 +1,13 @@
-// may need to change the path to .env file based on your project structure
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+const { Pool } = require("pg");
+const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
-const { Sequelize } = require('sequelize');
+// This will use the DATABASE_URL from your .env file
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
+// This is a separate ORM instance, not used yet but configured
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -10,9 +15,8 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: 'postgres',
-    logging: console.log
-  }
+    dialect: "postgres",
+  },
 );
 
-module.exports = sequelize;
+module.exports = { pool, sequelize };
