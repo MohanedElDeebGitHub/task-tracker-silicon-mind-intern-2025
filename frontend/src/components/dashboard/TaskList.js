@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Card, Table, Form, Badge, Button } from 'react-bootstrap';
 import '../../styles/TaskList.css';
 
-function TaskList({ tasks = [], onNewTaskClick }) {
+// 1. Accept onEditClick as a prop
+function TaskList({ tasks = [], onNewTaskClick, onEditClick }) {
   const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredTasks = useMemo(() => {
@@ -18,7 +19,7 @@ function TaskList({ tasks = [], onNewTaskClick }) {
   const getStatusBadge = (status) => {
     const variants = {
       'done': 'success',
-      'in-progress': 'warning',
+      'in progress': 'warning',
       'to-do': 'secondary'
     };
     return (
@@ -68,7 +69,7 @@ function TaskList({ tasks = [], onNewTaskClick }) {
         >
           <option value="all">Sort by: All</option>
           <option value="to-do">To-do</option>
-          <option value="in-progress">In Progress</option>
+          <option value="in progress">In Progress</option>
           <option value="done">Done</option>
         </Form.Select>
       </Card.Header>
@@ -87,7 +88,12 @@ function TaskList({ tasks = [], onNewTaskClick }) {
           <tbody className="task-table-body">
             {filteredTasks.length > 0 ? (
               filteredTasks.map(task => (
-                <tr key={task.id} className="task-row">
+                // 2. Add onClick to the table row
+                <tr 
+                  key={task.id} 
+                  className="task-row" 
+                  onClick={() => onEditClick(task)}
+                >
                   <td className="task-title">{task.title || 'Untitled Task'}</td>
                   <td className="task-description">{task.description || 'No description'}</td>
                   <td className="task-duration">{formatDuration(task.total_duration)}</td>

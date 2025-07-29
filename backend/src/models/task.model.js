@@ -23,14 +23,33 @@ async function findById(id) {
   const { rows } = await pool.query(query, [id]);
   return rows[0];
 }
-
 async function update(id, { title, description, status, total_duration }) {
-  const query = `
-    UPDATE tasks 
-    SET title = $1, description = $2, status = $3, total_duration = $4 
-    WHERE id = $5 
-    RETURNING *`;
-  const values = [title, description, status, total_duration, id];
+  let query;
+  let values;
+
+  if (status === "done") {
+    // Set total_duration as an INTERVAL (difference between now and created_at)
+    query = `
+      UPDATE tasks
+      SET title = $1,
+          description = $2,
+          status = $3,
+          total_duration = (NOW() - created_at)
+      WHERE id = $4
+      RETURNING *`;
+    values = [title, description, status, id];
+  } else {
+    // For non-done status, keep the existing total_duration or set to null
+    query = `
+      UPDATE tasks
+      SET title = $1,
+          description = $2,
+          status = $3
+      WHERE id = $4
+      RETURNING *`;
+    values = [title, description, status, id];
+  }
+
   const { rows } = await pool.query(query, values);
   return rows[0];
 }

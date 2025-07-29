@@ -99,6 +99,7 @@ function AddTaskForm({ show, onHide, onTaskAdded }) {
               onChange={handleInputChange}
             >
               <option value="to-do">To-do</option>
+              <option value="in progress">In Progress</option>
               <option value="done">Done</option>
             </Form.Select>
           </Form.Group>

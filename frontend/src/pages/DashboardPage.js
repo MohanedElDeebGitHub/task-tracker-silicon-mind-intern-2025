@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import SideBar from '../components/dashboard/SideBar';
 import TaskList from '../components/dashboard/TaskList';
 import AddTaskForm from '../components/dashboard/AddTaskForm';
+import UpdateTaskModal from '../components/dashboard/UpdateTaskModal';
 import '../styles/dashboard.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,13 +13,18 @@ export function DashboardPage() {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false); // was true
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const navigate = useNavigate();
 
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      if (!token) navigate('/');
+      if (!token) {
+        navigate('/');
+        return;
+      }
 
       const response = await fetch('http://localhost:3001/api/tasks', {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -26,12 +32,12 @@ export function DashboardPage() {
 
       if (response.status === 401) {
         console.log('Unauthorized - redirecting to login');
-        localStorage.removeItem('authToken'); // Clear invalid token
+        localStorage.removeItem('authToken');
         navigate('/');
         return;
-    }
+      }
 
-      if (!response.ok){
+      if (!response.ok) {
         throw new Error('Failed to fetch tasks');
       }
 
@@ -58,6 +64,32 @@ export function DashboardPage() {
     setShowAddModal(false);
   };
 
+  const handleTaskEdit = (task) => {
+    console.log('Editing task:', task);
+    setSelectedTask(task);
+    setShowUpdateModal(true);
+  };
+
+  const handleTaskUpdated = (updatedTask) => {
+    console.log('Task updated:', updatedTask);
+    
+    // Update the task in the tasks array
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    );
+    
+    // Close the modal and clear selected task
+    setShowUpdateModal(false);
+    setSelectedTask(null);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setShowUpdateModal(false);
+    setSelectedTask(null);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -74,14 +106,24 @@ export function DashboardPage() {
           <TaskList 
             tasks={tasks} 
             onNewTaskClick={() => setShowAddModal(true)}
+            onEditClick={handleTaskEdit}
           />
         </div>
       </div>
 
+      {/* Add Task Modal */}
       <AddTaskForm 
         show={showAddModal}
         onHide={() => setShowAddModal(false)}
         onTaskAdded={handleTaskAdded}
+      />
+
+      {/* Update Task Modal */}
+      <UpdateTaskModal
+        show={showUpdateModal}
+        onHide={handleCloseUpdateModal}
+        task={selectedTask}
+        onTaskUpdated={handleTaskUpdated}
       />
     </>
   );
