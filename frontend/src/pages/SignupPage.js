@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BrandingPanel from '../components/auth/BrandingPanel';
 import SignupForm from '../components/auth/SignupForm';
 import '../styles/auth.css';
+import { useNavigate } from 'react-router-dom';
 
 export function SignupPage() {
   const [username, setUsername] = useState('');
@@ -10,6 +11,7 @@ export function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -32,6 +34,8 @@ export function SignupPage() {
       // Signup successful
       setSignupSuccess(true);
       console.log("Sign up successful.", data);
+
+      navigate('/dashboard');
 
     } catch (err) {
       setSignupSuccess(null);

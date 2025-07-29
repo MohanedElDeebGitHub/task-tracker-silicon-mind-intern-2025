@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BrandingPanel from '../components/auth/BrandingPanel';
 import LoginForm from '../components/auth/LoginForm';
 import '../styles/auth.css';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault(); 
@@ -27,12 +29,13 @@ export function LoginPage() {
         throw new Error(data.error || 'Failed to login');
       }
       
-      // Login successful
       setLoginSuccess(true);
 
       console.log("Sign in successful. Token saved.");
       
       localStorage.setItem('authToken', data.token);
+
+      navigate('/dashboard');
 
     } catch (err) {
       setLoginSuccess(null);

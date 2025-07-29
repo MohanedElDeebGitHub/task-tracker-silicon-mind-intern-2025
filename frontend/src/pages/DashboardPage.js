@@ -4,6 +4,7 @@ import SideBar from '../components/dashboard/SideBar';
 import TaskList from '../components/dashboard/TaskList';
 import AddTaskForm from '../components/dashboard/AddTaskForm';
 import '../styles/dashboard.css';
+import { useNavigate } from 'react-router-dom';
 
 export function DashboardPage() {
   const [tasks, setTasks] = useState([]);
@@ -12,11 +13,12 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false); // was true
+  const navigate = useNavigate();
 
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      if (!token) throw new Error("Authentication token not found.");
+      if (!token) navigate('/');
 
       const response = await fetch('http://localhost:3001/api/tasks', {
         headers: { 'Authorization': `Bearer ${token}` }
