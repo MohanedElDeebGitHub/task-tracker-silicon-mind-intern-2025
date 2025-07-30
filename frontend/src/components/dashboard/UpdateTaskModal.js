@@ -108,7 +108,7 @@ function UpdateTaskModal({ show, onHide, task, onTaskUpdated }) {
               disabled={isTaskDone} // Disable if task is done
             >
               <option value="to-do">To-do</option>
-              <option value="in-progress">In Progress</option>
+              <option value="in progress">In Progress</option>
               <option value="done">Done</option>
             </Form.Select>
             {isTaskDone && (

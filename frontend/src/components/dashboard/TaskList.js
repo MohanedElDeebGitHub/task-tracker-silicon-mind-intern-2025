@@ -7,10 +7,16 @@ function TaskList({ tasks = [], onEditClick }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [tasksPerPage] = useState(3); // Show 5 tasks per page
+  const [tasksPerPage] = useState(3); 
 
   const getRowClassName = (status) => {
-  return `task-row status-${status}`;
+    if(status === 'in progress') return 'task-row status-in-progress'; // until (in progrss) naming is changed to NOT include space, we need this hotfix
+    return `task-row status-${status}`;
+};
+
+  const getBadgeClassName = (badge) => {
+    if(badge === 'in progress') return 'task-status-badge task-status-badge-in-progress'; // until (in progrss) naming is changed to NOT include space, we need this hotfix
+    return `task-status-badge task-status-badge-${badge}`;
 };
 
 
@@ -39,36 +45,36 @@ function TaskList({ tasks = [], onEditClick }) {
   const getStatusBadge = (status) => {
     const variants = {
       'done': 'success',
-      'in-progress': 'warning',
+      'in progress': 'warning',
       'to-do': 'secondary'
     };
     return (
       <Badge 
         bg={variants[status] || 'primary'} 
-        className="task-status-badge"
+        className={getBadgeClassName(status)}
       >
         {status || 'Unknown'}
       </Badge>
     );
   };
 
-  const formatDuration = (duration) => {
-    if (!duration || typeof duration !== 'object' || Object.keys(duration).length === 0) {
-      return 'N/A';
-    }
-    
-    if (duration.hours || duration.minutes || duration.seconds) {
-      const hours = duration.hours || 0;
+  const formatDuration = (duration, status) => {
+    if(status !== 'done'){
+      return 'Task unfinished';
+    }else{
+if (!duration || typeof duration !== 'object' || Object.keys(duration).length === 0) {
+      return 'Immediate finish';
+    }else{
+const hours = duration.hours || 0;
       const minutes = duration.minutes || 0;
       const seconds = duration.seconds || 0;
       return `${hours}h ${minutes}m ${seconds}s`;
     }
-    
-    return 'N/A';
+    }
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return 'Task unfinished';
     try {
       return new Date(dateString).toLocaleDateString();
     } catch (error) {
@@ -190,7 +196,7 @@ function TaskList({ tasks = [], onEditClick }) {
                 currentTasks.map(task => (
                   <tr 
                     key={task.id} 
-                    className="task-row"
+                    className={getRowClassName(task.status)}  // ← Use the function here
                     onClick={() => onEditClick && onEditClick(task)}
                     style={{ cursor: 'pointer' }}
                   >
@@ -201,7 +207,7 @@ function TaskList({ tasks = [], onEditClick }) {
                       {task.description || 'No description'}
                     </td>
                     <td className="task-duration">
-                      {formatDuration(task.total_duration)}
+                      {formatDuration(task.total_duration, task.status)}
                     </td>
                     <td className="task-date">
                       {formatDate(task.created_at)}
