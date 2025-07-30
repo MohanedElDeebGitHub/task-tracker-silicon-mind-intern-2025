@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import SideBar from '../components/dashboard/SideBar';
 import TaskList from '../components/dashboard/TaskList';
-import AddTaskForm from '../components/dashboard/AddTaskForm';
 import UpdateTaskModal from '../components/dashboard/UpdateTaskModal';
 import '../styles/dashboard.css';
 import { useNavigate } from 'react-router-dom';
