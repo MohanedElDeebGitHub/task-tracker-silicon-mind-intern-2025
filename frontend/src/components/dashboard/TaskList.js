@@ -3,11 +3,16 @@ import { Card, Table, Form, Badge, Button, Pagination } from 'react-bootstrap';
 import AddTaskForm from './AddTaskForm';
 import '../../styles/TaskList.css';
 
-function TaskList({ tasks = [], onTaskAdded, onEditClick }) {
+function TaskList({ tasks = [], onEditClick }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage] = useState(3); // Show 5 tasks per page
+
+  const getRowClassName = (status) => {
+  return `task-row status-${status}`;
+};
+
 
   const filteredTasks = useMemo(() => {
     if (!Array.isArray(tasks)) {
@@ -164,7 +169,7 @@ function TaskList({ tasks = [], onTaskAdded, onEditClick }) {
           >
             <option value="all">Sort by: All</option>
             <option value="to-do">To-do</option>
-            <option value="in-progress">In Progress</option>
+            <option value="in progress">In Progress</option>
             <option value="done">Done</option>
           </Form.Select>
         </Card.Header>
@@ -234,7 +239,6 @@ function TaskList({ tasks = [], onTaskAdded, onEditClick }) {
       <AddTaskForm 
         show={showAddModal}
         onHide={handleCloseModal}
-        onTaskAdded={onTaskAdded}
       />
     </>
   );

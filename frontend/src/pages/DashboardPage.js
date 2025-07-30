@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom';
 
 export function DashboardPage() {
   const [tasks, setTasks] = useState([]);
-  const [user, setUser] = useState({ name: 'User' });
-  const [stats, setStats] = useState([]);
+  const [user, setUser] = useState(null);
+  // const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -25,6 +25,9 @@ export function DashboardPage() {
         navigate('/');
         return;
       }
+
+      setUser(localStorage.getItem('username'));
+      console.log(user);
 
       const response = await fetch('http://localhost:3001/api/tasks', {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -101,7 +104,7 @@ export function DashboardPage() {
         </div>
         <div className="main-content">
           <header>
-            <h2>Hello, {user.name} 👋</h2>
+            <h2>Hello, {user} 👋</h2>
           </header>
           <TaskList 
             tasks={tasks} 

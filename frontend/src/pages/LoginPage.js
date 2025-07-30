@@ -34,6 +34,8 @@ export function LoginPage() {
       console.log("Sign in successful. Token saved.");
       
       localStorage.setItem('authToken', data.token);
+      console.log(data);
+      localStorage.setItem('username', data.username);
 
       navigate('/dashboard');
 

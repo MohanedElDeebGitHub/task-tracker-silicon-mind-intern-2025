@@ -66,7 +66,7 @@ function UpdateTaskModal({ show, onHide, task, onTaskUpdated }) {
 
   return (
     <Modal show={show} onHide={handleClose} centered fade={false}>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>Edit Task</Modal.Title>
       </Modal.Header>
       <Modal.Body>

@@ -25,7 +25,7 @@ function SideBar({ user }) {
       <div className="user-profile">
         <div className="user-icon"></div>
         <div>
-          <div className="user-profile-name">{user.name}</div>
+          <div className="user-profile-name">{user}</div>
           <small className="user-profile-permission">free plan user</small>
         </div>
       </div>
