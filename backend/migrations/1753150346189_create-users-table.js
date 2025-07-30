@@ -5,29 +5,29 @@ exports.shorthands = undefined;
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  */
 exports.up = (pgm) => {
-  pgm.createTable('users', {
+  pgm.createTable("users", {
     id: {
-      type: 'SERIAL',
+      type: "SERIAL",
       primaryKey: true,
     },
     username: {
-      type: 'VARCHAR(35)',
+      type: "VARCHAR(35)",
       notNull: true,
       unique: true,
     },
     email: {
-      type: 'VARCHAR(50)',
+      type: "VARCHAR(50)",
       notNull: true,
       unique: true,
     },
     password: {
-      type: 'VARCHAR(255)',
+      type: "VARCHAR(255)",
       notNull: true,
     },
     created_at: {
-      type: 'TIMESTAMP',
+      type: "TIMESTAMP",
       notNull: true,
-      default: pgm.func('current_timestamp'),
+      default: pgm.func("current_timestamp"),
     },
   });
 };
@@ -36,5 +36,5 @@ exports.up = (pgm) => {
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  */
 exports.down = (pgm) => {
-  pgm.dropTable('users');
+  pgm.dropTable("users");
 };
