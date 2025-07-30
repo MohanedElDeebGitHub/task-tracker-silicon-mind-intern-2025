@@ -1,4 +1,9 @@
-const { findOneByEmail, findOneByUsername, create, getUser } = require("../../models/user.model.js");
+const {
+  findOneByEmail,
+  findOneByUsername,
+  create,
+  getUser,
+} = require("../../models/user.model.js");
 const jwt = require("jsonwebtoken");
 
 function isValidEmail(email) {
@@ -22,7 +27,10 @@ async function register(req, res) {
     }
 
     if (!isValidUsername(username)) {
-      return res.status(400).json({ error: "Username must be 3–20 characters long and contain only letters, numbers, or underscores." });
+      return res.status(400).json({
+        error:
+          "Username must be 3–20 characters long and contain only letters, numbers, or underscores.",
+      });
     }
 
     if (!isValidEmail(email)) {
@@ -30,7 +38,10 @@ async function register(req, res) {
     }
 
     if (!isStrongPassword(password)) {
-      return res.status(400).json({ error: "Password must be at least 6 characters long, at max 255 characters long and contain both letters and numbers." });
+      return res.status(400).json({
+        error:
+          "Password must be at least 6 characters long, at max 255 characters long and contain both letters and numbers.",
+      });
     }
 
     const existingUsername = await findOneByUsername(username);
@@ -61,7 +72,9 @@ async function login(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required." });
+      return res
+        .status(400)
+        .json({ error: "Email and password are required." });
     }
 
     if (!isValidEmail(email)) {
