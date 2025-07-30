@@ -1,3 +1,6 @@
+const logger = require('../../config/logger.js');
+
+
 const {
   findOneByEmail,
   findOneByUsername,
@@ -62,7 +65,7 @@ async function register(req, res) {
       created_at: newUser.created_at,
     });
   } catch (error) {
-    console.error("Error during registration:", error);
+    logger.error("Error during registration:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -102,7 +105,7 @@ async function login(req, res) {
       token: token,
     });
   } catch (error) {
-    console.error("Error occurred during login:", error);
+    logger.error("Error occurred during login:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

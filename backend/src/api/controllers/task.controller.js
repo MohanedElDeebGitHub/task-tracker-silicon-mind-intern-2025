@@ -1,3 +1,5 @@
+const logger = require('../../config/logger');
+
 const taskModel = require("../../models/task.model");
 
 async function createTask(req, res) {
@@ -18,7 +20,7 @@ async function createTask(req, res) {
 
     res.status(201).json(newTask);
   } catch (error) {
-    console.error("Error creating new task: ", error);
+    logger.error("Error creating new task: ", error);
     res.status(500).json({ error: "internal server error" });
   }
 }
@@ -29,7 +31,7 @@ async function getAllTasks(req, res) {
     const allTasks = await taskModel.findAllByUserId(user_id);
     res.status(200).json(allTasks);
   } catch (error) {
-    console.error("Error fetching tasks: ", error);
+    logger.error("Error fetching tasks: ", error);
     res.status(500).json({ error: "internal server error" });
   }
 }
@@ -55,7 +57,7 @@ async function getTaskById(req, res) {
 
     res.status(200).json(task);
   } catch (error) {
-    console.error("Error retrieving task by id:  ", error);
+    logger.error("Error retrieving task by id:  ", error);
     res.status(500).json({ error: "Internal server error." });
   }
 }
@@ -80,7 +82,7 @@ async function updateTask(req, res) {
     const updatedTask = await taskModel.update(taskId, req.body);
     res.status(200).json(updatedTask);
   } catch (error) {
-    console.error("Error updating task:", error);
+    logger.error("Error updating task:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -105,7 +107,7 @@ async function deleteTask(req, res) {
     await taskModel.remove(taskId);
     res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
-    console.error("Error deleting task:", error);
+    logger.error("Error deleting task:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

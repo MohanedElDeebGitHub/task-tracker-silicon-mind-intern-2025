@@ -4,6 +4,8 @@ const taskRoutes = require("./api/routes/task.routes.js");
 const morgan = require('morgan');
 const cors = require("cors");
 
+const logger = require('./config/logger.js');
+
 const app = express();
 
 app.use(express.json());
@@ -17,5 +19,5 @@ app.use("/api/tasks", taskRoutes);
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });

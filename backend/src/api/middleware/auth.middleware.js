@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const logger = require('../../config/logger.js');
+
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -16,6 +18,7 @@ function verifyToken(req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
+    logger.error("Error occurred at auth middleware: ", err);
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 }
