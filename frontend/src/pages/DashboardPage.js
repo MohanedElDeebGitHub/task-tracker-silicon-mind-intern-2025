@@ -110,16 +110,11 @@ export function DashboardPage() {
             tasks={tasks} 
             onNewTaskClick={() => setShowAddModal(true)}
             onEditClick={handleTaskEdit}
+            onTaskAdded={handleTaskAdded}
           />
         </div>
       </div>
 
-      {/* Add Task Modal */}
-      <AddTaskForm 
-        show={showAddModal}
-        onHide={() => setShowAddModal(false)}
-        onTaskAdded={handleTaskAdded}
-      />
 
       {/* Update Task Modal */}
       <UpdateTaskModal

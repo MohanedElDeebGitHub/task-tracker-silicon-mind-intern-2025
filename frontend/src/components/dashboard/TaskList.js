@@ -3,7 +3,7 @@ import { Card, Table, Form, Badge, Button, Pagination } from 'react-bootstrap';
 import AddTaskForm from './AddTaskForm';
 import '../../styles/TaskList.css';
 
-function TaskList({ tasks = [], onEditClick }) {
+function TaskList({ tasks = [], onEditClick, onTaskAdded }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -245,6 +245,7 @@ const hours = duration.hours || 0;
       <AddTaskForm 
         show={showAddModal}
         onHide={handleCloseModal}
+        onTaskAdded={onTaskAdded}
       />
     </>
   );

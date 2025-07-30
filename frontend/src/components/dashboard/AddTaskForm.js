@@ -3,7 +3,7 @@ import { Form, Alert } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-function AddTaskForm({ show, onHide}) {
+function AddTaskForm({ show, onHide, onTaskAdded}) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -41,6 +41,10 @@ function AddTaskForm({ show, onHide}) {
       }
 
       const newTask = await response.json();
+      
+        if (onTaskAdded) {
+      onTaskAdded(newTask);
+    }
       handleClose();
     } catch (err) {
       setError(err.message);
@@ -53,6 +57,7 @@ function AddTaskForm({ show, onHide}) {
     setFormData({ title: '', description: '', status: 'to-do' });
     setError('');
     onHide();
+
   };
 
   return (
