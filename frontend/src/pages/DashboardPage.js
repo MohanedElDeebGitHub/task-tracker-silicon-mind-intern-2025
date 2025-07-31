@@ -3,7 +3,7 @@ import SideBar from '../components/dashboard/SideBar';
 import TaskList from '../components/dashboard/TaskList';
 import UpdateTaskModal from '../components/dashboard/UpdateTaskModal';
 import '../styles/dashboard.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export function DashboardPage() {
   const [tasks, setTasks] = useState([]);
