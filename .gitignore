@@ -32,3 +32,6 @@ docker-compose.override.yml
 # Misc
 *.tgz
 .env
+
+**/sonar-project.properties
+sonar-project.properties
