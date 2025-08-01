@@ -2,5 +2,5 @@ projectKey=trackr
 serverUrl=http://localhost:9000
 serverVersion=25.7.0.110598
 dashboardUrl=http://localhost:9000/dashboard?id=trackr
-ceTaskId=02d1d9e6-a50b-4087-8fe3-e6d81a5b843d
-ceTaskUrl=http://localhost:9000/api/ce/task?id=02d1d9e6-a50b-4087-8fe3-e6d81a5b843d
+ceTaskId=060f3066-6eee-4c59-876e-6658351f341f
+ceTaskUrl=http://localhost:9000/api/ce/task?id=060f3066-6eee-4c59-876e-6658351f341f
