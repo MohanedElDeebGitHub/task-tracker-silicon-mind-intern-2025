@@ -7,7 +7,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-// This is a separate ORM instance, not used yet but configured
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
