@@ -1,19 +1,11 @@
-# Use official Node.js image as the build environment
-FROM node:20-alpine AS build
-
+# Stage 1: Build
+FROM node:18-alpine as build
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
 COPY . .
+RUN npm install
 RUN npm run build
 
-# Use Nginx to serve the built frontend
+# Stage 2: Serve
 FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
