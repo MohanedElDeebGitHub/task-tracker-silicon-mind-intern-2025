@@ -29,7 +29,6 @@ async function createTask(req, res) {
       });
     }
     
-    // For all other errors, return 500
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -70,16 +69,10 @@ async function updateTask(req, res) {
     const taskId = req.params.id;
     const userId = req.user.id;
 
-    const task = await taskModel.findById(taskId);
+    const task = await taskModel.findOne({ where: { id: taskId, user_id: userId } });
 
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
-    }
-
-    if (task.user_id !== userId) {
-      return res
-        .status(403)
-        .json({ error: "Forbidden: You do not own this task" });
     }
 
     const updatedTask = await taskModel.update(taskId, req.body);
@@ -95,16 +88,10 @@ async function deleteTask(req, res) {
     const taskId = req.params.id;
     const userId = req.user.id;
 
-    const task = await taskModel.findById(taskId);
+    const task = await taskModel.findOne({ where: { id: taskId, user_id: userId } });
 
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
-    }
-
-    if (task.user_id !== userId) {
-      return res
-        .status(403)
-        .json({ error: "Forbidden: You do not own this task" });
     }
 
     await taskModel.remove(taskId);
