@@ -1,61 +1,104 @@
-const { pool } = require("../config/db.js");
+const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
+const { sequelize } = require("../config/db.js");
 
-// A function to find a user by their email or username (used for registration and login)
-async function findOneByEmailUsername(email, username) {
-  const query = "SELECT * FROM users WHERE email = $1 OR username = $2";
-  const { rows } = await pool.query(query, [email, username]);
+const User = sequelize.define("User", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  }
+}, {
+  tableName: "users",
+  timestamps: false,
+  hooks: {
+    beforeCreate: async (user) => {
+      const saltRounds = 12;
+      user.password = await bcrypt.hash(user.password, saltRounds);
+    },
+  },
+});
 
-  return rows[0];
-}
-
+/**
+ * Find a user by email
+ * @param {string} email - The email to search for
+ * @returns {Promise<User|null>} The found user or null
+ */
 async function findOneByEmail(email) {
-  const query = "SELECT * FROM users WHERE email = $1";
-  const { rows } = await pool.query(query, [email]);
-
-  return rows[0];
+  return await User.findOne({ where: { email } });
 }
 
+/**
+ * Find a user by username
+ * @param {string} username - The username to search for
+ * @returns {Promise<User|null>} The found user or null
+ */
 async function findOneByUsername(username) {
-  const query = "SELECT * FROM users WHERE username = $1";
-  const { rows } = await pool.query(query, [username]);
-
-  return rows[0];
+  return await User.findOne({ where: { username } });
 }
 
+/**
+ * Create a new user
+ * @param {string} username - The username for the new user
+ * @param {string} email - The email for the new user
+ * @param {string} password - The password for the new user (will be hashed)
+ * @returns {Promise<User>} The created user
+ */
 async function create(username, email, password) {
-  const saltRounds = 12;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  const query =
-    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email, created_at";
-  const { rows } = await pool.query(query, [username, email, hashedPassword]);
-
-  return rows[0]; // Returns the newly created user object
+  return await User.create({
+    username,
+    email,
+    password
+  });
 }
 
+/**
+ * Get a user by email and verify password
+ * @param {string} email - The email to search for
+ * @param {string} password - The password to verify
+ * @returns {Promise<User|null>} The user if authentication is successful, null otherwise
+ */
 async function getUser(email, password) {
-  const userQuery = "SELECT * FROM users WHERE email = $1";
-  const { rows } = await pool.query(userQuery, [email]);
-  const user = rows[0];
-
+  const user = await User.findOne({ where: { email } });
+  
   if (!user) {
     return null;
   }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
+  
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  
+  if (!isPasswordValid) {
     return null;
   }
-
-  delete user.password;
+  
   return user;
 }
 
 module.exports = {
+  User,
   findOneByEmail,
   findOneByUsername,
   create,
-  getUser,
+  getUser
 };

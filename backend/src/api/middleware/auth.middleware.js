@@ -8,7 +8,7 @@ function verifyToken(req, res, next) {
 
   if (!token) {
     return res
-      .status(403)
+      .status(401)
       .json({ error: "A token is required for authentication" });
   }
 

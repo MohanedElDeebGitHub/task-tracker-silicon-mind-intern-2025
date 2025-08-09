@@ -84,7 +84,7 @@ router.use(authMiddleware);
  *       401:
  *         description: Unauthorized (invalid or expired token)
  */
-router.get("/", taskController.getAllTasks);
+router.get("/", taskController.getTasks);
 
 /**
  * @swagger
