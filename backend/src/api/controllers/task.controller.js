@@ -47,21 +47,15 @@ async function getAllTasks(req, res) {
 
 async function getTaskById(req, res) {
   try {
-    const user_id = req.user.id;
-    const task_id = req.params.id;
+    const taskId = req.params.id;
+    const userId = req.user.id;
 
-    const task = await taskModel.findById(task_id);
+    const task = await taskModel.findOne({ where: { id: taskId, user_id: userId } });
 
     if (!task) {
       return res
         .status(404)
-        .json({ message: "Task with that ID doesn't exist." });
-    }
-
-    if (task.user_id !== user_id) {
-      return res
-        .status(403)
-        .json({ message: "You don't have access to this resource." });
+        .json({ message: "Task not found." });
     }
 
     res.status(200).json(task);
