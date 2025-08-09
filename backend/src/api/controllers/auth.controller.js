@@ -1,5 +1,5 @@
 const logger = require('../../config/logger.js');
-
+const { body, validationResult } = require("express-validator");
 
 const {
   findOneByEmail,
@@ -9,43 +9,55 @@ const {
 } = require("../../models/user.model.js");
 const jwt = require("jsonwebtoken");
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+// ------------------ VALIDATION MIDDLEWARES ------------------
+
+// Register validation
+const validateRegister = [
+  body("username")
+    .trim()
+    .notEmpty().withMessage("Username is required.")
+    .isLength({ min: 3, max: 20 })
+    .withMessage("Username must be 3–20 characters long.")
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage("Username can only contain letters, numbers, or underscores."),
+  body("email")
+    .trim()
+    .notEmpty().withMessage("Email is required.")
+    .isEmail().withMessage("Invalid email format."),
+  body("password")
+    .notEmpty().withMessage("Password is required.")
+    .isLength({ min: 6, max: 255 })
+    .withMessage("Password must be at least 6 and at most 255 characters long.")
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/)
+    .withMessage("Password must contain both letters and numbers."),
+];
+
+// Login validation
+const validateLogin = [
+  body("email")
+    .trim()
+    .notEmpty().withMessage("Email is required.")
+    .isEmail().withMessage("Invalid email format."),
+  body("password")
+    .notEmpty().withMessage("Password is required."),
+];
+
+// ------------------ HELPERS ------------------
+function checkValidation(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+  return null;
 }
 
-function isValidUsername(username) {
-  return /^[a-zA-Z0-9_]{3,20}$/.test(username); // 3-20 chars, alphanumeric + underscore
-}
-
-function isStrongPassword(password) {
-  return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password); // min 6 chars, letters & numbers
-}
-
+// ------------------ CONTROLLERS ------------------
 async function register(req, res) {
   try {
+    const validationError = checkValidation(req, res);
+    if (validationError) return validationError;
+
     const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: "All fields are required." });
-    }
-
-    if (!isValidUsername(username)) {
-      return res.status(400).json({
-        error:
-          "Username must be 3–20 characters long and contain only letters, numbers, or underscores.",
-      });
-    }
-
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ error: "Invalid email format." });
-    }
-
-    if (!isStrongPassword(password)) {
-      return res.status(400).json({
-        error:
-          "Password must be at least 6 characters long, at max 255 characters long and contain both letters and numbers.",
-      });
-    }
 
     const existingUsername = await findOneByUsername(username);
     if (existingUsername) {
@@ -72,17 +84,10 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
+    const validationError = checkValidation(req, res);
+    if (validationError) return validationError;
+
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: "Email and password are required." });
-    }
-
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ error: "Invalid email format." });
-    }
 
     const user = await getUser(email, password);
     if (user == null) {
@@ -110,4 +115,4 @@ async function login(req, res) {
   }
 }
 
-module.exports = { register, login };
+module.exports = { register, login, validateRegister, validateLogin };

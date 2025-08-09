@@ -63,9 +63,10 @@ const authController = require("../controllers/auth.controller.js");
  *       500:
  *         description: Internal server error
  */
-router.post("/register", (req, res) => {
-  authController.register(req, res);
-});
+router.post("/register", 
+  authController.validateRegister, // Middleware is applied correctly as a separate argument
+  authController.register
+);
 
 /**
  * @swagger
@@ -113,8 +114,9 @@ router.post("/register", (req, res) => {
  *       500:
  *         description: Internal server error
  */
-router.post("/login", (req, res) => {
-  authController.login(req, res);
-});
+router.post("/login", 
+  authController.validateLogin,
+  authController.login
+);
 
 module.exports = router;
