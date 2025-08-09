@@ -1,8 +1,12 @@
 const request = require('supertest');
 const express = require('express');
 const authRoutes = require('./auth.routes.js');
-const { pool } = require('../../config/db.js');
+const { sequelize } = require('../../config/db.js');
+const { User } = require('../../models/user.model.js');
 require('dotenv').config();
+
+// Import Jest globals explicitly to fix linting issues
+const { describe, it, expect, beforeEach, afterAll } = global;
 
 // Setup a test Express app
 const app = express();
@@ -21,15 +25,34 @@ describe('Authentication Routes', () => {
 
   // Clean up before each test to ensure fresh state
   beforeEach(async () => {
-    await pool.query('DELETE FROM users WHERE email LIKE $1 OR username LIKE $2', 
-      [`%${timestamp}%`, `%${timestamp}%`]);
+    await User.destroy({
+      where: {
+        email: testUser.email
+      }
+    });
+    
+    await User.destroy({
+      where: {
+        username: testUser.username
+      }
+    });
   });
 
   // Clean up after all tests
   afterAll(async () => {
-    await pool.query('DELETE FROM users WHERE email LIKE $1 OR username LIKE $2', 
-      [`%${timestamp}%`, `%${timestamp}%`]);
-    await pool.end();
+    await User.destroy({
+      where: {
+        email: testUser.email
+      }
+    });
+    
+    await User.destroy({
+      where: {
+        username: testUser.username
+      }
+    });
+    
+    await sequelize.close();
   });
 
   describe('POST /api/auth/register', () => {

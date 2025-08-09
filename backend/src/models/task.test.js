@@ -1,5 +1,10 @@
 const taskModel = require('./task.model');
-const { pool } = require('../config/db');
+const { User } = require('./user.model');
+const { sequelize } = require('../config/db');
+const bcrypt = require('bcrypt');
+
+// Import Jest globals explicitly to fix linting issues
+const { describe, it, expect, beforeAll, afterAll } = global;
 
 describe('Task Model', () => {
   // Generate unique test identifiers
@@ -11,7 +16,7 @@ describe('Task Model', () => {
   const testUser = {
     username: `taskmodeluser_${testId}`,
     email: `taskmodel_${testId}@example.com`,
-    password: 'hashedpassword123'
+    password: 'password123'
   };
 
   const testTask = {
@@ -23,18 +28,15 @@ describe('Task Model', () => {
   // Setup: Create a test user for tasks
   beforeAll(async () => {
     try {
-      // Create test user
-      const userQuery = `
-        INSERT INTO users (username, email, password) 
-        VALUES ($1, $2, $3) 
-        RETURNING id`;
-      const userResult = await pool.query(userQuery, [
-        testUser.username,
-        testUser.email,
-        testUser.password
-      ]);
-      testUserId = userResult.rows[0].id;
+      // Create test user with Sequelize
+      const hashedPassword = await bcrypt.hash(testUser.password, 10);
+      const user = await User.create({
+        username: testUser.username,
+        email: testUser.email,
+        password: hashedPassword
+      });
       
+      testUserId = user.id;
       console.log('✅ Test user created with ID:', testUserId);
     } catch (error) {
       console.error('❌ Test setup failed:', error);
@@ -45,14 +47,12 @@ describe('Task Model', () => {
   // Cleanup: Remove test data
   afterAll(async () => {
     try {
-      // Clean up tasks first (foreign key constraint)
-      await pool.query('DELETE FROM tasks WHERE user_id = $1', [testUserId]);
-      
-      // Clean up user
-      await pool.query('DELETE FROM users WHERE id = $1', [testUserId]);
+      // Clean up tasks and user with Sequelize
+      await taskModel.destroy({ where: { user_id: testUserId } });
+      await User.destroy({ where: { id: testUserId } });
       
       // Close database connection
-      await pool.end();
+      await sequelize.close();
       
       console.log('✅ Test cleanup complete');
     } catch (error) {
@@ -182,17 +182,13 @@ describe('Task Model', () => {
     });
 
     it('should return empty array for user with no tasks', async () => {
-      // Create another user with no tasks
-      const anotherUserQuery = `
-        INSERT INTO users (username, email, password) 
-        VALUES ($1, $2, $3) 
-        RETURNING id`;
-      const anotherUserResult = await pool.query(anotherUserQuery, [
-        `notaskuser_${testId}`,
-        `notask_${testId}@example.com`,
-        'password123'
-      ]);
-      const anotherUserId = anotherUserResult.rows[0].id;
+      // Create another user with no tasks using Sequelize
+      const anotherUser = await User.create({
+        username: `notaskuser_${testId}`,
+        email: `notask_${testId}@example.com`,
+        password: await bcrypt.hash('password123', 10)
+      });
+      const anotherUserId = anotherUser.id;
 
       const tasks = await taskModel.findAllByUserId(anotherUserId);
 
@@ -200,7 +196,7 @@ describe('Task Model', () => {
       expect(tasks).toHaveLength(0);
 
       // Cleanup
-      await pool.query('DELETE FROM users WHERE id = $1', [anotherUserId]);
+      await User.destroy({ where: { id: anotherUserId } });
     });
 
     it('should return empty array for non-existent user', async () => {

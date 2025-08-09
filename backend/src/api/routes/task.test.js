@@ -3,7 +3,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const taskRoutes = require('./task.routes');
 const authRoutes = require('./auth.routes');
-const { pool } = require('../../config/db');
+const { sequelize } = require('../../config/db');
+const { User } = require('../../models/user.model');
+const Task = require('../../models/task.model');
+
+// Import Jest globals explicitly to fix linting issues
+const { describe, it, expect, beforeAll, afterAll } = global;
 
 // Setup test Express app
 const app = express();
@@ -61,14 +66,12 @@ describe('Task Routes', () => {
   // Cleanup: Remove test data
   afterAll(async () => {
     try {
-      // Clean up tasks
-      await pool.query('DELETE FROM tasks WHERE user_id = $1', [testUserId]);
-      
-      // Clean up user
-      await pool.query('DELETE FROM users WHERE id = $1', [testUserId]);
+      // Clean up tasks and user with Sequelize
+      await Task.destroy({ where: { user_id: testUserId } });
+      await User.destroy({ where: { id: testUserId } });
       
       // Close database connection
-      await pool.end();
+      await sequelize.close();
       
       console.log('✅ Test cleanup complete');
     } catch (error) {
@@ -250,8 +253,8 @@ describe('Task Routes', () => {
       expect(res.body).toHaveProperty('message', "You don't have access to this resource.");
 
       // Cleanup
-      await pool.query('DELETE FROM tasks WHERE user_id = $1', [anotherUserId]);
-      await pool.query('DELETE FROM users WHERE id = $1', [anotherUserId]);
+      await Task.destroy({ where: { user_id: anotherUserId } });
+      await User.destroy({ where: { id: anotherUserId } });
     });
   });
 

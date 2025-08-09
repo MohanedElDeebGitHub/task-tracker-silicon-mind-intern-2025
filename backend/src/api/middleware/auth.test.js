@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('./auth.middleware');
 const logger = require('../../config/logger');
 
+// Import Jest globals explicitly to fix linting issues
+const { describe, it, expect, beforeEach, jest } = global;
+
 // Mock dependencies
 jest.mock('jsonwebtoken');
 jest.mock('../../config/logger');
