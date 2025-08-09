@@ -21,7 +21,16 @@ async function createTask(req, res) {
     res.status(201).json(newTask);
   } catch (error) {
     logger.error("Error creating new task: ", error);
-    res.status(500).json({ error: "internal server error" });
+    
+    // Check for PostgreSQL unique constraint violation (code 23505), this makes the code tighly coupled on DB type
+    if (error.code === '23505') {
+      return res.status(409).json({ 
+        error: "A task with this title already exists" 
+      });
+    }
+    
+    // For all other errors, return 500
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
