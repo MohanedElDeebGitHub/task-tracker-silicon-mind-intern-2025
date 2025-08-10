@@ -16,6 +16,7 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "react-router": "^7.7.1",
+    "react-router-dom": "^6.30.1",
     "react-scripts": "5.0.1",
     "tailwind": "^4.0.0",
     "text-encoding": "^0.7.0",
@@ -40,6 +41,14 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(msw|@bundled-es-modules|@mswjs|tough-cookie|react-router|react-router-dom)/)"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -61,12 +70,14 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^30.0.5",
     "lint-staged": "^16.1.2",
     "msw": "^2.10.4",
     "postcss": "^8.5.6",
     "prettier": "3.6.2",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "web-streams-polyfill": "^4.1.0"
   }
 }
