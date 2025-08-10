@@ -42,27 +42,21 @@ if (typeof window !== 'undefined') {
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
-// Dynamically import MSW server AFTER polyfills are applied
-// let server;
+// Import MSW server for API mocking
+import { server } from './mocks/server';
 
-// // Establish API mocking before all tests.
-// beforeAll(async () => {
-//   const { server: mswServer } = await import('./mocks/server.js');
-//   server = mswServer;
-//   server.listen();
-// });
+// Establish API mocking before all tests.
+beforeAll(() => {
+  server.listen();
+});
 
-// // Reset any request handlers that we may add during tests,
-// // so they don't affect other tests.
-// afterEach(() => {
-//   if (server) {
-//     server.resetHandlers();
-//   }
-// });
+// Reset any request handlers that we may add during tests,
+// so they don't affect other tests.
+afterEach(() => {
+  server.resetHandlers();
+});
 
-// // Clean up after the tests are finished.
-// afterAll(() => {
-//   if (server) {
-//     server.close();
-//   }
-// });
+// Clean up after the tests are finished.
+afterAll(() => {
+  server.close();
+});

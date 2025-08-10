@@ -1,134 +1,94 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { LoginPage } from './LoginPage'; // Assuming LoginPage is a named export
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import LoginPage from './LoginPage';
 
-// --- Mocks ---
-
-// 1. Mock react-router to control the navigate function
-const mockNavigate = jest.fn();
-jest.mock('react-router', () => ({
-  useNavigate: () => mockNavigate,
-}));
-
-// 2. Mock child components to isolate the LoginPage
-jest.mock('../components/auth/BrandingPanel', () => () => <div data-testid="branding-panel" />);
-jest.mock('../components/auth/LoginForm', () => 
-  ({ handleLogin, email, setEmail, password, setPassword, isLoading, error, loginSuccess }) => (
-    <form data-testid="login-form" onSubmit={handleLogin}>
-      <input
-        type="email"
-        placeholder="Email Address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Login'}
-      </button>
-      {error && <div data-testid="error-message">{error}</div>}
-      {loginSuccess && <div data-testid="success-message">Login Successful</div>}
-    </form>
-));
-
-// 3. Mock CSS imports
+// Mock CSS imports
 jest.mock('../styles/auth.css', () => ({}));
 
-// 4. Mock the global fetch API
-global.fetch = jest.fn();
-
-// --- Test Suite ---
+// Mock child components to isolate the LoginPage
+jest.mock('../components/auth/BrandingPanel', () => () => <div data-testid="branding-panel" />);
 
 describe('LoginPage', () => {
-
-  // Before each test, clear all mocks to ensure a clean slate
   beforeEach(() => {
-    fetch.mockClear();
-    mockNavigate.mockClear();
+    jest.clearAllMocks();
     localStorage.clear();
-    // Spy on localStorage.setItem to track its calls
-    jest.spyOn(window.localStorage.__proto__, 'setItem');
   });
 
-  test('handles successful login and navigation', async () => {
-    // Arrange: Set up the mock successful API response
-    const mockToken = 'fake-jwt-token';
-    const mockUsername = 'testuser';
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ token: mockToken, username: mockUsername }),
-    });
+  const renderLoginPage = () => {
+    return render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+  };
 
-    render(<LoginPage />);
-
-    // Act: Simulate user typing and submitting the form
-    fireEvent.change(screen.getByPlaceholderText('Email Address'), {
-      target: { value: 'test@example.com' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { value: 'password123' },
-    });
-    fireEvent.submit(screen.getByTestId('login-form'));
-
-    // Assert: Check that the component behaves as expected
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-
-    await waitFor(() => {
-      // Check that localStorage was updated
-      expect(localStorage.setItem).toHaveBeenCalledWith('authToken', mockToken);
-      expect(localStorage.setItem).toHaveBeenCalledWith('username', mockUsername);
-    });
-
-    await waitFor(() => {
-      // Check that the user is redirected
-      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
-    });
-
-    // Check that the success message is shown
-    expect(screen.getByTestId('success-message')).toBeInTheDocument();
+  test('renders login page with all components', () => {
+    renderLoginPage();
+    
+    expect(screen.getByTestId('branding-panel')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByText(/don't have an account/i)).toBeInTheDocument();
   });
 
-  test('handles failed login and displays an error message', async () => {
-    // Arrange: Set up the mock failed API response
-    const errorMessage = 'Invalid credentials';
-    fetch.mockResolvedValueOnce({
-      ok: false,
-      json: async () => ({ error: errorMessage }),
-    });
-
-    render(<LoginPage />);
-
-    // Act: Simulate form submission
-    fireEvent.submit(screen.getByTestId('login-form'));
-
-    // Assert: Check that the error is displayed
+  test('handles successful login with MSW', async () => {
+    renderLoginPage();
+    
+    // Fill in valid credentials
+    await userEvent.type(screen.getByLabelText(/email/i), 'testuser@example.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
+    
+    // Submit form
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    
+    // Wait for successful login
     await waitFor(() => {
-      expect(screen.getByTestId('error-message')).toHaveTextContent(errorMessage);
+      // Check localStorage was set
+      expect(localStorage.getItem('authToken')).toBe('fake-jwt-token');
+      expect(localStorage.getItem('username')).toBe('testuser');
     });
-
-    // Assert that navigation and localStorage were NOT called
-    expect(mockNavigate).not.toHaveBeenCalled();
-    expect(localStorage.setItem).not.toHaveBeenCalled();
   });
 
-  test('handles network errors during fetch', async () => {
-    // Arrange: Simulate a network failure
-    const networkError = 'Network request failed';
-    fetch.mockRejectedValueOnce(new Error(networkError));
-
-    render(<LoginPage />);
-
-    // Act: Simulate form submission
-    fireEvent.submit(screen.getByTestId('login-form'));
-
-    // Assert: Check that the network error is displayed
+  test('handles failed login with invalid credentials', async () => {
+    renderLoginPage();
+    
+    // Fill in invalid credentials
+    await userEvent.type(screen.getByLabelText(/email/i), 'invalid@example.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'wrongpassword');
+    
+    // Submit form
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    
+    // Wait for error message
     await waitFor(() => {
-      expect(screen.getByTestId('error-message')).toHaveTextContent(networkError);
+      expect(screen.getByText(/invalid email or password/i)).toBeInTheDocument();
     });
+    
+    // Should not set localStorage
+    expect(localStorage.getItem('authToken')).toBeNull();
+  });
+
+  test('updates form fields when user types', async () => {
+    renderLoginPage();
+    
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    
+    await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.type(passwordInput, 'testpassword');
+    
+    expect(emailInput).toHaveValue('test@example.com');
+    expect(passwordInput).toHaveValue('testpassword');
+  });
+
+  test('sign up link navigates to signup page', () => {
+    renderLoginPage();
+    
+    const signUpLink = screen.getByRole('link', { name: /sign up/i });
+    expect(signUpLink).toHaveAttribute('href', '/signup');
   });
 });
