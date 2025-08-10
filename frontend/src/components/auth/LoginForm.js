@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import InputField from './InputField';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function LoginForm({
   email, setEmail,

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BrandingPanel from '../components/auth/BrandingPanel';
 import LoginForm from '../components/auth/LoginForm';
 import '../styles/auth.css';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');

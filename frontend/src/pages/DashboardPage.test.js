@@ -1,6 +1,6 @@
-// Mock useNavigate from react-router
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
+// Mock useNavigate from react-router-dom
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
 }));
 
@@ -25,8 +25,8 @@ jest.mock('../components/dashboard/TaskList', () => {
 
 const mockNavigate = jest.fn();
 
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
 

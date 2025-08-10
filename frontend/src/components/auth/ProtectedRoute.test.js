@@ -4,7 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 
 // Mock Navigate component to avoid router context issues
-jest.mock('react-router', () => ({
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   Navigate: ({ to }) => <div data-testid="navigate-to">{to}</div>
 }));
 
