@@ -276,4 +276,7 @@ describe('UpdateTaskModal', () => {
     expect(screen.getByText('Edit Task')).toBeInTheDocument();
     expect(defaultProps.onHide).toHaveBeenCalledTimes(0);
   });
+} ) ; 
+ 
+ 
 });
