@@ -156,7 +156,6 @@ describe('UpdateTaskModal', () => {
     // Let's check if an error state exists instead
     expect(submitButton).not.toBeDisabled();
   });
-  });
 
   test('handles successful update', async () => {
     render(<UpdateTaskModal {...defaultProps} />);
@@ -276,7 +275,4 @@ describe('UpdateTaskModal', () => {
     expect(screen.getByText('Edit Task')).toBeInTheDocument();
     expect(defaultProps.onHide).toHaveBeenCalledTimes(0);
   });
-} ) ; 
- 
- 
 });
