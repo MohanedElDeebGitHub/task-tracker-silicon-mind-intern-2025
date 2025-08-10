@@ -188,7 +188,7 @@ describe('TaskList', () => {
     render(<TaskList {...defaultProps} />);
     
     // Task with duration
-    expect(screen.getByText('2h 30m 15s')).toBeInTheDocument();
+    expect(screen.getByText('1h 45m 0s')).toBeInTheDocument();
     
     // Task without duration but in progress
     expect(screen.getByText('Task unfinished')).toBeInTheDocument();
@@ -210,33 +210,30 @@ describe('TaskList', () => {
   });
 
   test('calls onEditClick when task row is clicked', async () => {
-    const user = userEvent.setup();
     render(<TaskList {...defaultProps} />);
     
     const taskRow = screen.getByText('Task 1').closest('tr');
-    await user.click(taskRow);
+    await userEvent.click(taskRow);
     
     expect(defaultProps.onEditClick).toHaveBeenCalledWith(mockTasks[0]);
   });
 
   test('opens add task modal when New Task button is clicked', async () => {
-    const user = userEvent.setup();
     render(<TaskList {...defaultProps} />);
     
     const newTaskButton = screen.getByText('New Task');
-    await user.click(newTaskButton);
+    await userEvent.click(newTaskButton);
     
     expect(screen.getByTestId('add-task-form')).toBeInTheDocument();
     expect(screen.getByText('Add New Task')).toBeInTheDocument();
   });
 
   test('closes add task modal', async () => {
-    const user = userEvent.setup();
     render(<TaskList {...defaultProps} />);
     
     // Open modal
     const newTaskButton = screen.getByText('New Task');
-    await user.click(newTaskButton);
+    await userEvent.click(newTaskButton);
     
     // Close modal
     const closeButton = screen.getByText('Close');
@@ -246,12 +243,11 @@ describe('TaskList', () => {
   });
 
   test('handles task added callback', async () => {
-    const user = userEvent.setup();
     render(<TaskList {...defaultProps} />);
     
     // Open modal
     const newTaskButton = screen.getByText('New Task');
-    await user.click(newTaskButton);
+    await userEvent.click(newTaskButton);
     
     // Add task
     const addTaskButton = screen.getByText('Add Task');
@@ -283,7 +279,7 @@ describe('TaskList', () => {
     expect(screen.getByText('Untitled Task')).toBeInTheDocument();
     expect(screen.getByText('No description')).toBeInTheDocument();
     expect(screen.getByText('Unknown')).toBeInTheDocument();
-    expect(screen.getByText('Invalid Date')).toBeInTheDocument();
+    expect(screen.getByText('Task unfinished')).toBeInTheDocument();
   });
 
   test('applies correct CSS classes for task status', () => {

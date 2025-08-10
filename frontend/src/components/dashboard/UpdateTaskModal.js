@@ -65,7 +65,7 @@ function UpdateTaskModal({ show, onHide, task, onTaskUpdated }) {
   const isTaskDone = task.status === 'done';
 
   return (
-    <Modal show={show} onHide={handleClose} centered fade={false}>
+    <Modal show={show} onHide={handleClose} centered animation={false}>
       <Modal.Header>
         <Modal.Title>Edit Task</Modal.Title>
       </Modal.Header>

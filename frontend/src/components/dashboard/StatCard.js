@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 function StatCard({ title, value, trend }) {
-  const trendColor = trend.startsWith('+') ? 'text-success' : 'text-danger';
+  const trendColor = trend && trend.startsWith('+') ? 'text-success' : 'text-danger';
 
   return (
     <Card className="shadow-sm border-0">
