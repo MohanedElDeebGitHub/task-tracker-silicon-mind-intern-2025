@@ -19,7 +19,9 @@ jest.mock('../components/auth/LoginForm', () => ({
   isLoading, 
   error, 
   loginSuccess,
-  handleLogin 
+  handleLogin,
+  emailError,
+  passwordError
 }) => (
   <form onSubmit={handleLogin} data-testid="login-form">
     <input

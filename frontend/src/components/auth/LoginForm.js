@@ -9,7 +9,8 @@ function LoginForm({
   isLoading, error,
   handleLogin,
   emailError, passwordError, setError,
-  loginSuccess, setLoginSuccess
+  loginSuccess, setLoginSuccess,
+  clearFieldError
 }) {
   return (
     <div className="">
@@ -21,15 +22,14 @@ function LoginForm({
           {console.log(error)}
           <div className="alert alert-danger" role="alert">
             {typeof error === 'string' ? error : error?.message || 'An error occurred.'}
-
-</div>
+          </div>
         </>
       )}
 
       {loginSuccess && (
-        <div class="alert alert-success" role="alert">
-  Login Successful! Redirecting to Dashboard...
-</div>
+        <div className="alert alert-success" role="alert">
+          Login Successful! Redirecting to Dashboard...
+        </div>
       )}
 
       <Form onSubmit={handleLogin}>
@@ -37,15 +37,16 @@ function LoginForm({
           type="email"
           placeholder="Email"
           value={email}
-
           onChange={(e) => {
             setEmail(e.target.value);
-            if (error){
+            if (error) {
               setError(null);
               setLoginSuccess(null);
             }
+            if (emailError && clearFieldError) {
+              clearFieldError('email');
+            }
           }}
-  
           icon="email"
           error={emailError}
         />
@@ -56,9 +57,12 @@ function LoginForm({
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-            if (error){
+            if (error) {
               setError(null);
               setLoginSuccess(null);
+            }
+            if (passwordError && clearFieldError) {
+              clearFieldError('password');
             }
           }}
           icon="password"

@@ -12,7 +12,13 @@ jest.mock('../styles/auth.css', () => ({}));
 // Mock child components to isolate the SignupPage
 jest.mock('../components/auth/BrandingPanel', () => () => <div data-testid="branding-panel" />);
 jest.mock('../components/auth/SignupForm', () => (props) => {
-  const { username, setUsername, email, setEmail, password, setPassword, isLoading, error, signupSuccess, handleSignup } = props;
+  const { 
+    username, setUsername, 
+    email, setEmail, 
+    password, setPassword, 
+    isLoading, error, signupSuccess, handleSignup,
+    usernameError, emailError, passwordError
+  } = props;
   return (
     <form onSubmit={handleSignup} data-testid="signup-form">
       <input
@@ -179,14 +185,15 @@ describe('SignupPage', () => {
   test('handles validation errors', async () => {
     renderSignupPage();
     
-    // Fill in invalid data (missing username)
-    await userEvent.type(screen.getByTestId('email-input'), 'invalid@example.com');
+    // Fill in valid data but with an email that will cause a server error
+    await userEvent.type(screen.getByTestId('username-input'), 'testuser');
+    await userEvent.type(screen.getByTestId('email-input'), 'existing@example.com');
     await userEvent.type(screen.getByTestId('password-input'), 'password123');
     
     // Submit form
     await userEvent.click(screen.getByTestId('signup-button'));
     
-    // Should show validation error
+    // Should show server validation error
     await waitFor(() => {
       expect(screen.getByTestId('error-message')).toBeInTheDocument();
     });

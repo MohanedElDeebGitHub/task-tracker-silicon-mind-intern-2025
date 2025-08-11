@@ -10,7 +10,8 @@ function SignupForm({
   isLoading, error, setError,
   usernameError, emailError, passwordError,
   signupSuccess, setSignupSuccess,
-  handleSignup
+  handleSignup,
+  clearFieldError
 }) {
   return (
     <div className="">
@@ -31,14 +32,17 @@ function SignupForm({
 
       <Form onSubmit={handleSignup}>
         <InputField
-          type="username"
+          type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => {
             setUsername(e.target.value);
-            if (error){
+            if (error) {
               setError(null);
               setSignupSuccess(null);
+            }
+            if (usernameError && clearFieldError) {
+              clearFieldError('username');
             }
           }}
           icon="username"
@@ -51,9 +55,12 @@ function SignupForm({
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            if (error){
+            if (error) {
               setError(null);
               setSignupSuccess(null);
+            }
+            if (emailError && clearFieldError) {
+              clearFieldError('email');
             }
           }}
           icon="email"
@@ -66,9 +73,12 @@ function SignupForm({
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-            if (error){
+            if (error) {
               setError(null);
               setSignupSuccess(null);
+            }
+            if (passwordError && clearFieldError) {
+              clearFieldError('password');
             }
           }}
           icon="password"
