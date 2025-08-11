@@ -10,11 +10,21 @@ exports.createTask = async (req, res) => {
       return res.status(400).json({ message: "Title is required." });
     }
 
+    // Remove this line: const now = new Date();
+    let totalDuration = null;
+
+    // If creating already done, calculate duration = 0
+    if (status === "done") {
+      totalDuration = 0;
+    }
+
     const task = await Task.create({
       title,
       description,
-      status: status || "pending",
+      status: status || "to-do",
       user_id: userId,
+      // Remove this line: created_at: now,
+      total_duration: totalDuration,
     });
 
     res.status(201).json(task.toJSON());
@@ -66,10 +76,24 @@ exports.updateTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found." });
     }
 
+
+
     task.title = title ?? task.title;
     task.description = description ?? task.description;
-    task.status = status ?? task.status;
 
+    // If status is being updated
+    if (status === "done" && task.status !== "done") {
+  // Use UTC timestamps to avoid timezone issues
+  const nowUTC = new Date().getTime();
+  const createdAtUTC = new Date(task.created_at).getTime();
+  
+  task.total_duration = Math.floor((nowUTC - createdAtUTC)) - 10800000;
+  logger.info(`Duration: ${task.total_duration/1000} seconds`);
+  logger.info(`Now UTC: ${new Date(nowUTC).toISOString()}`);
+  logger.info(`Created UTC: ${new Date(createdAtUTC).toISOString()}`);
+
+}
+      task.status = status;
     await task.save();
 
     res.status(200).json(task.toJSON());
