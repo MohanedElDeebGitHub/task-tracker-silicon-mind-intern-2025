@@ -61,8 +61,6 @@ function TaskList({ tasks = [], onEditClick, onTaskAdded }) {
  const formatDuration = (duration, status) => {
   if (status !== 'done') return 'Task unfinished';
   
-  console.log('Duration value:', duration, 'Type:', typeof duration);
-  
   // Handle null, undefined, or invalid duration
   if (duration === null || duration === undefined) {
     return 'Immediate finish';
@@ -81,6 +79,11 @@ function TaskList({ tasks = [], onEditClick, onTaskAdded }) {
   
   // Handle object format (e.g., {hours: 1, minutes: 14, seconds: 0})
   if (typeof duration === 'object') {
+    // Check if it's an empty object
+    if (Object.keys(duration).length === 0) {
+      return 'Immediate finish';
+    }
+    
     const hours = duration.hours || 0;
     const minutes = duration.minutes || 0;
     const seconds = duration.seconds || 0;
