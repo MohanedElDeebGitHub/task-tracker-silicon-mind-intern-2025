@@ -24,7 +24,7 @@ function UpdateTaskModal({ show, onHide, task, onTaskUpdated }) {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-
+    
     const updatedData = { title, description, status };
     const token = localStorage.getItem('authToken');
 

@@ -58,20 +58,49 @@ function TaskList({ tasks = [], onEditClick, onTaskAdded }) {
     );
   };
 
-  const formatDuration = (duration, status) => {
-    if(status !== 'done'){
-      return 'Task unfinished';
-    }else{
-if (!duration || typeof duration !== 'object' || Object.keys(duration).length === 0) {
-      return 'Immediate finish';
-    }else{
-const hours = duration.hours || 0;
-      const minutes = duration.minutes || 0;
-      const seconds = duration.seconds || 0;
+ const formatDuration = (duration, status) => {
+  if (status !== 'done') return 'Task unfinished';
+  
+  console.log('Duration value:', duration, 'Type:', typeof duration);
+  
+  // Handle null, undefined, or invalid duration
+  if (duration === null || duration === undefined) {
+    return 'Immediate finish';
+  }
+  
+  // Handle PostgreSQL interval string format (e.g., "1:30:45")
+  if (typeof duration === 'string') {
+    const parts = duration.split(':');
+    if (parts.length === 3) {
+      const hours = parseInt(parts[0]) || 0;
+      const minutes = parseInt(parts[1]) || 0;
+      const seconds = parseInt(parts[2]) || 0;
       return `${hours}h ${minutes}m ${seconds}s`;
     }
-    }
-  };
+  }
+  
+  // Handle object format (e.g., {hours: 1, minutes: 14, seconds: 0})
+  if (typeof duration === 'object') {
+    const hours = duration.hours || 0;
+    const minutes = duration.minutes || 0;
+    const seconds = duration.seconds || 0;
+    
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+  
+  // Handle number format (milliseconds) - fallback
+  const durationMs = Number(duration);
+  if (isNaN(durationMs)) {
+    return 'Immediate finish';
+  }
+  
+  const totalSeconds = Math.floor(durationMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${hours}h ${minutes}m ${seconds}s`;
+};
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Task unfinished';

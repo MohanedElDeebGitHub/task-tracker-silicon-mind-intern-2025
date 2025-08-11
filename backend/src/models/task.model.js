@@ -22,7 +22,7 @@ const Task = sequelize.define("Task", {
     defaultValue: "to-do",
   },
   total_duration: {
-    type: DataTypes.BIGINT, // store in ms
+    type: DataTypes.STRING, // PostgreSQL INTERVAL gets returned as string/object
     allowNull: true,
   },
   user_id: {

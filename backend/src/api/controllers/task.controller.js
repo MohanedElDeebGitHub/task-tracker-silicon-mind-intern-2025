@@ -83,16 +83,25 @@ exports.updateTask = async (req, res) => {
 
     // If status is being updated
     if (status === "done" && task.status !== "done") {
-  // Use UTC timestamps to avoid timezone issues
-  const nowUTC = new Date().getTime();
-  const createdAtUTC = new Date(task.created_at).getTime();
-  
-  task.total_duration = Math.floor((nowUTC - createdAtUTC)) - 10800000;
-  logger.info(`Duration: ${task.total_duration/1000} seconds`);
-  logger.info(`Now UTC: ${new Date(nowUTC).toISOString()}`);
-  logger.info(`Created UTC: ${new Date(createdAtUTC).toISOString()}`);
-
-}
+      // Use UTC timestamps to avoid timezone issues
+      const nowUTC = new Date().getTime();
+      const createdAtUTC = new Date(task.created_at).getTime();
+      
+      const durationMs = Math.floor((nowUTC - createdAtUTC)) - 10800000;
+      
+      // Convert milliseconds to PostgreSQL interval format
+      const totalSeconds = Math.floor(durationMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      
+      // Store as PostgreSQL interval string format
+      task.total_duration = `${hours}:${minutes}:${seconds}`;
+      
+      logger.info(`Duration: ${totalSeconds} seconds (${hours}h ${minutes}m ${seconds}s)`);
+      logger.info(`Now UTC: ${new Date(nowUTC).toISOString()}`);
+      logger.info(`Created UTC: ${new Date(createdAtUTC).toISOString()}`);
+    }
       task.status = status;
     await task.save();
 
