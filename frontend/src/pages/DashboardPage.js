@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import SideBar from '../components/dashboard/SideBar';
-import TaskList from '../components/dashboard/TaskList';
-import UpdateTaskModal from '../components/dashboard/UpdateTaskModal';
-import '../styles/dashboard.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import SideBar from "../components/dashboard/SideBar";
+import TaskList from "../components/dashboard/TaskList";
+import UpdateTaskModal from "../components/dashboard/UpdateTaskModal";
+import "../styles/dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
   const [tasks, setTasks] = useState([]);
@@ -18,35 +18,34 @@ export function DashboardPage() {
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) {
-        navigate('/');
+        navigate("/");
         return;
       }
 
-      setUser(localStorage.getItem('username'));
+      setUser(localStorage.getItem("username"));
       console.log(user);
 
-      const response = await fetch('http://localhost:3001/api/tasks', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch("http://localhost:3001/api/tasks", {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.status === 401) {
-        console.log('Unauthorized - redirecting to login');
-        localStorage.removeItem('authToken');
-        navigate('/');
+        console.log("Unauthorized - redirecting to login");
+        localStorage.removeItem("authToken");
+        navigate("/");
         return;
       }
 
       if (!response.ok) {
-        
-        throw new Error('Failed to fetch tasks');
+        throw new Error("Failed to fetch tasks");
       }
 
       const data = await response.json();
       setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
       setError(err.message);
       setTasks([]);
     }
@@ -62,26 +61,26 @@ export function DashboardPage() {
   }, []);
 
   const handleTaskAdded = (newTask) => {
-    setTasks(prev => [newTask, ...prev]);
+    setTasks((prev) => [newTask, ...prev]);
     setShowAddModal(false);
   };
 
   const handleTaskEdit = (task) => {
-    console.log('Editing task:', task);
+    console.log("Editing task:", task);
     setSelectedTask(task);
     setShowUpdateModal(true);
   };
 
   const handleTaskUpdated = (updatedTask) => {
-    console.log('Task updated:', updatedTask);
-    
+    console.log("Task updated:", updatedTask);
+
     // Update the task in the tasks array
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === updatedTask.id ? updatedTask : task
-      )
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task,
+      ),
     );
-    
+
     // Close the modal and clear selected task
     setShowUpdateModal(false);
     setSelectedTask(null);
@@ -98,22 +97,21 @@ export function DashboardPage() {
   return (
     <>
       <div className="dashboard-layout">
-        <div className='SideBar'>
+        <div className="SideBar">
           <SideBar user={user} />
         </div>
         <div className="main-content">
           <header>
             <h2>Hello, {user} 👋</h2>
           </header>
-          <TaskList 
-            tasks={tasks} 
+          <TaskList
+            tasks={tasks}
             onNewTaskClick={() => setShowAddModal(true)}
             onEditClick={handleTaskEdit}
             onTaskAdded={handleTaskAdded}
           />
         </div>
       </div>
-
 
       {/* Update Task Modal */}
       <UpdateTaskModal

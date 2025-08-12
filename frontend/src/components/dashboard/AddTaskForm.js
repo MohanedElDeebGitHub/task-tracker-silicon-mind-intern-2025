@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import { Form, Alert } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React, { useState } from "react";
+import { Form, Alert } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
-function AddTaskForm({ show, onHide, onTaskAdded}) {
+function AddTaskForm({ show, onHide, onTaskAdded }) {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    status: 'to-do'
+    title: "",
+    description: "",
+    status: "to-do",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) throw new Error("No auth token found.");
 
-      const response = await fetch('http://localhost:3001/api/tasks', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/api/tasks", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -41,10 +41,10 @@ function AddTaskForm({ show, onHide, onTaskAdded}) {
       }
 
       const newTask = await response.json();
-      
-        if (onTaskAdded) {
-      onTaskAdded(newTask);
-    }
+
+      if (onTaskAdded) {
+        onTaskAdded(newTask);
+      }
       handleClose();
     } catch (err) {
       setError(err.message);
@@ -54,10 +54,9 @@ function AddTaskForm({ show, onHide, onTaskAdded}) {
   };
 
   const handleClose = () => {
-    setFormData({ title: '', description: '', status: 'to-do' });
-    setError('');
+    setFormData({ title: "", description: "", status: "to-do" });
+    setError("");
     onHide();
-
   };
 
   return (
@@ -67,11 +66,13 @@ function AddTaskForm({ show, onHide, onTaskAdded}) {
       </Modal.Header>
 
       <Form onSubmit={handleSubmit}>
-        <Modal.Body >
+        <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
 
           <Form.Group className="mb-3">
-            <Form.Label>Title <span className="text-danger">*</span></Form.Label>
+            <Form.Label>
+              Title <span className="text-danger">*</span>
+            </Form.Label>
             <Form.Control
               type="text"
               name="title"
@@ -114,7 +115,7 @@ function AddTaskForm({ show, onHide, onTaskAdded}) {
             Cancel
           </Button>
           <Button variant="primary" type="submit" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Task'}
+            {loading ? "Creating..." : "Create Task"}
           </Button>
         </Modal.Footer>
       </Form>

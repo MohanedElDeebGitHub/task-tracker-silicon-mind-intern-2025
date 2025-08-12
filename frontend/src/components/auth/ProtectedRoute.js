@@ -1,8 +1,8 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem("authToken");
 
   if (!token) {
     // If no token exists, redirect the user to the login page

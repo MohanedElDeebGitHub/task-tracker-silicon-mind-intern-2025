@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller.js");
 
-
 /**
  * @swagger
  * tags:
@@ -63,9 +62,10 @@ const authController = require("../controllers/auth.controller.js");
  *       500:
  *         description: Internal server error
  */
-router.post("/register", 
+router.post(
+  "/register",
   authController.validateRegister, // Middleware is applied correctly as a separate argument
-  authController.register
+  authController.register,
 );
 
 /**
@@ -114,9 +114,6 @@ router.post("/register",
  *       500:
  *         description: Internal server error
  */
-router.post("/login", 
-  authController.validateLogin,
-  authController.login
-);
+router.post("/login", authController.validateLogin, authController.login);
 
 module.exports = router;

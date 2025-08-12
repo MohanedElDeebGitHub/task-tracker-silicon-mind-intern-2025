@@ -2,43 +2,47 @@ const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { sequelize } = require("../config/db.js");
 
-const User = sequelize.define("User", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true,
+const User = sequelize.define(
+  "User",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  }
-}, {
-  tableName: "users",
-  timestamps: false,
-  hooks: {
-    beforeCreate: async (user) => {
-      const saltRounds = 12;
-      user.password = await bcrypt.hash(user.password, saltRounds);
+  {
+    tableName: "users",
+    timestamps: false,
+    hooks: {
+      beforeCreate: async (user) => {
+        const saltRounds = 12;
+        user.password = await bcrypt.hash(user.password, saltRounds);
+      },
     },
   },
-});
+);
 
 /**
  * Find a user by email
@@ -69,7 +73,7 @@ async function create(username, email, password) {
   return await User.create({
     username,
     email,
-    password
+    password,
   });
 }
 
@@ -81,17 +85,17 @@ async function create(username, email, password) {
  */
 async function getUser(email, password) {
   const user = await User.findOne({ where: { email } });
-  
+
   if (!user) {
     return null;
   }
-  
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  
+
   if (!isPasswordValid) {
     return null;
   }
-  
+
   return user;
 }
 
@@ -100,5 +104,5 @@ module.exports = {
   findOneByEmail,
   findOneByUsername,
   create,
-  getUser
+  getUser,
 };

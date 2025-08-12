@@ -1,36 +1,36 @@
 // MUST BE FIRST: Load polyfills before any other imports
-const { TextEncoder, TextDecoder } = require('util');
-const { TransformStream } = require('web-streams-polyfill');
+const { TextEncoder, TextDecoder } = require("util");
+const { TransformStream } = require("web-streams-polyfill");
 
 // Apply polyfills to all possible global contexts
-if (typeof global.TextEncoder === 'undefined') {
+if (typeof global.TextEncoder === "undefined") {
   global.TextEncoder = TextEncoder;
 }
-if (typeof global.TextDecoder === 'undefined') {
+if (typeof global.TextDecoder === "undefined") {
   global.TextDecoder = TextDecoder;
 }
-if (typeof global.TransformStream === 'undefined') {
+if (typeof global.TransformStream === "undefined") {
   global.TransformStream = TransformStream;
 }
 
-if (typeof globalThis.TextEncoder === 'undefined') {
+if (typeof globalThis.TextEncoder === "undefined") {
   globalThis.TextEncoder = TextEncoder;
 }
-if (typeof globalThis.TextDecoder === 'undefined') {
+if (typeof globalThis.TextDecoder === "undefined") {
   globalThis.TextDecoder = TextDecoder;
 }
-if (typeof globalThis.TransformStream === 'undefined') {
+if (typeof globalThis.TransformStream === "undefined") {
   globalThis.TransformStream = TransformStream;
 }
 
-if (typeof window !== 'undefined') {
-  if (typeof window.TextEncoder === 'undefined') {
+if (typeof window !== "undefined") {
+  if (typeof window.TextEncoder === "undefined") {
     window.TextEncoder = TextEncoder;
   }
-  if (typeof window.TextDecoder === 'undefined') {
+  if (typeof window.TextDecoder === "undefined") {
     window.TextDecoder = TextDecoder;
   }
-  if (typeof window.TransformStream === 'undefined') {
+  if (typeof window.TransformStream === "undefined") {
     window.TransformStream = TransformStream;
   }
 }
@@ -43,7 +43,7 @@ if (typeof window !== 'undefined') {
 import "@testing-library/jest-dom";
 
 // Import MSW server for API mocking
-import { server } from './mocks/server';
+import { server } from "./mocks/server";
 
 // Establish API mocking before all tests.
 beforeAll(() => {

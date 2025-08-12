@@ -1,5 +1,5 @@
 // Load polyfills
-require('./setupPolyfills.js');
+require("./setupPolyfills.js");
 
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
@@ -8,7 +8,7 @@ require('./setupPolyfills.js');
 import "@testing-library/jest-dom";
 
 // Import the MSW server
-import { server } from './mocks/server.js';
+import { server } from "./mocks/server.js";
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());

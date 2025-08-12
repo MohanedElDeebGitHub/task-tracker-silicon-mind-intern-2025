@@ -1,17 +1,25 @@
-import React from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
-import InputField from './InputField';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Form, Button, Spinner } from "react-bootstrap";
+import InputField from "./InputField";
+import { Link } from "react-router-dom";
 
 function SignupForm({
-  username, setUsername,
-  email, setEmail,
-  password, setPassword,
-  isLoading, error, setError,
-  usernameError, emailError, passwordError,
-  signupSuccess, setSignupSuccess,
+  username,
+  setUsername,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  isLoading,
+  error,
+  setError,
+  usernameError,
+  emailError,
+  passwordError,
+  signupSuccess,
+  setSignupSuccess,
   handleSignup,
-  clearFieldError
+  clearFieldError,
 }) {
   return (
     <div className="">
@@ -20,7 +28,9 @@ function SignupForm({
 
       {error && !usernameError && !emailError && !passwordError && (
         <div className="alert alert-danger" role="alert">
-          {typeof error === 'string' ? error : error?.message || 'An error occurred.'}
+          {typeof error === "string"
+            ? error
+            : error?.message || "An error occurred."}
         </div>
       )}
 
@@ -42,7 +52,7 @@ function SignupForm({
               setSignupSuccess(null);
             }
             if (usernameError && clearFieldError) {
-              clearFieldError('username');
+              clearFieldError("username");
             }
           }}
           icon="username"
@@ -60,7 +70,7 @@ function SignupForm({
               setSignupSuccess(null);
             }
             if (emailError && clearFieldError) {
-              clearFieldError('email');
+              clearFieldError("email");
             }
           }}
           icon="email"
@@ -78,7 +88,7 @@ function SignupForm({
               setSignupSuccess(null);
             }
             if (passwordError && clearFieldError) {
-              clearFieldError('password');
+              clearFieldError("password");
             }
           }}
           icon="password"
@@ -87,13 +97,16 @@ function SignupForm({
 
         <div className="d-grid mt-4">
           <Button className="login-button" type="submit" disabled={isLoading}>
-            {isLoading ? <Spinner animation="border" size="sm" /> : 'Sign Up'}
+            {isLoading ? <Spinner animation="border" size="sm" /> : "Sign Up"}
           </Button>
         </div>
       </Form>
 
       <p className="signup-redirect">
-        Have an account? <Link to="/" className="navigation-link">Sign In</Link>
+        Have an account?{" "}
+        <Link to="/" className="navigation-link">
+          Sign In
+        </Link>
       </p>
     </div>
   );

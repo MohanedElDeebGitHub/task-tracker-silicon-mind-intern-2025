@@ -1,4 +1,4 @@
-const logger = require('../../config/logger.js');
+const logger = require("../../config/logger.js");
 const { body, validationResult } = require("express-validator");
 
 const {
@@ -15,17 +15,21 @@ const jwt = require("jsonwebtoken");
 const validateRegister = [
   body("username")
     .trim()
-    .notEmpty().withMessage("Username is required.")
+    .notEmpty()
+    .withMessage("Username is required.")
     .isLength({ min: 3, max: 20 })
     .withMessage("Username must be 3–20 characters long.")
     .matches(/^[a-zA-Z0-9_]+$/)
     .withMessage("Username can only contain letters, numbers, or underscores."),
   body("email")
     .trim()
-    .notEmpty().withMessage("Email is required.")
-    .isEmail().withMessage("Invalid email format."),
+    .notEmpty()
+    .withMessage("Email is required.")
+    .isEmail()
+    .withMessage("Invalid email format."),
   body("password")
-    .notEmpty().withMessage("Password is required.")
+    .notEmpty()
+    .withMessage("Password is required.")
     .isLength({ min: 6, max: 255 })
     .withMessage("Password must be at least 6 and at most 255 characters long.")
     .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/)
@@ -36,10 +40,11 @@ const validateRegister = [
 const validateLogin = [
   body("email")
     .trim()
-    .notEmpty().withMessage("Email is required.")
-    .isEmail().withMessage("Invalid email format."),
-  body("password")
-    .notEmpty().withMessage("Password is required."),
+    .notEmpty()
+    .withMessage("Email is required.")
+    .isEmail()
+    .withMessage("Invalid email format."),
+  body("password").notEmpty().withMessage("Password is required."),
 ];
 
 // ------------------ HELPERS ------------------

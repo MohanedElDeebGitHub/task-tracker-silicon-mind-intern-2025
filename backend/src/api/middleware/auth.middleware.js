@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const logger = require('../../config/logger.js');
-
+const logger = require("../../config/logger.js");
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];

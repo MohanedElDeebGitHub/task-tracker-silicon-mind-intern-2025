@@ -10,7 +10,6 @@ exports.createTask = async (req, res) => {
       return res.status(400).json({ message: "Title is required." });
     }
 
-    // Remove this line: const now = new Date();
     let totalDuration = null;
 
     // If creating already done, calculate duration = 0
@@ -23,7 +22,6 @@ exports.createTask = async (req, res) => {
       description,
       status: status || "to-do",
       user_id: userId,
-      // Remove this line: created_at: now,
       total_duration: totalDuration,
     });
 
@@ -87,6 +85,9 @@ exports.updateTask = async (req, res) => {
       const nowUTC = new Date().getTime();
       const createdAtUTC = new Date(task.created_at).getTime();
       
+      // some weird local time reason makes it necessary to substract this number to get accurate
+      // time, this is 3hours in MS
+      // without - there will be a time difference of 3 hours
       const durationMs = Math.floor((nowUTC - createdAtUTC)) - 10800000;
       
       // Convert milliseconds to PostgreSQL interval format

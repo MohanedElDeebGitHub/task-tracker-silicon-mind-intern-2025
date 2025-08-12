@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT,
     dialect: "postgres",
     logging: false,
-  }
+  },
 );
 
 // User model
@@ -51,7 +51,7 @@ const User = sequelize.define(
         user.password = await bcrypt.hash(user.password, saltRounds);
       },
     },
-  }
+  },
 );
 
 // Task model
@@ -97,7 +97,7 @@ const Task = sequelize.define(
   {
     tableName: "tasks",
     timestamps: false,
-  }
+  },
 );
 
 // Associations

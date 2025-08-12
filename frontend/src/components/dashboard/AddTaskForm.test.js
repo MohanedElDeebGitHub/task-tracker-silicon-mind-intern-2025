@@ -1,102 +1,119 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import AddTaskForm from './AddTaskForm';
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import AddTaskForm from "./AddTaskForm";
 
 // Mock CSS imports
-jest.mock('../../styles/dashboard.css', () => ({}));
+jest.mock("../../styles/dashboard.css", () => ({}));
 
-describe('AddTaskForm', () => {
+describe("AddTaskForm", () => {
   const defaultProps = {
     show: true,
     onHide: jest.fn(),
-    onTaskAdded: jest.fn()
+    onTaskAdded: jest.fn(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    localStorage.setItem('authToken', 'fake-jwt-token');
+    localStorage.setItem("authToken", "fake-jwt-token");
   });
 
   afterEach(() => {
     localStorage.clear();
   });
 
-  test('renders modal when show is true', () => {
+  test("renders modal when show is true", () => {
     render(<AddTaskForm {...defaultProps} />);
-    
-    expect(screen.getByText('Create New Task')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter task title/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter task description/i)).toBeInTheDocument();
-    expect(screen.getByDisplayValue('To-do')).toBeInTheDocument();
+
+    expect(screen.getByText("Create New Task")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter task title/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter task description/i),
+    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue("To-do")).toBeInTheDocument();
   });
 
-  test('does not render modal when show is false', () => {
+  test("does not render modal when show is false", () => {
     render(<AddTaskForm {...defaultProps} show={false} />);
-    
-    expect(screen.queryByText('Create New Task')).not.toBeInTheDocument();
+
+    expect(screen.queryByText("Create New Task")).not.toBeInTheDocument();
   });
 
-  test('initializes with correct default values', () => {
+  test("initializes with correct default values", () => {
     render(<AddTaskForm {...defaultProps} />);
-    
-    expect(screen.getByPlaceholderText(/enter task title/i)).toHaveValue('');
-    expect(screen.getByPlaceholderText(/enter task description/i)).toHaveValue('');
-    expect(screen.getByDisplayValue('To-do')).toBeInTheDocument();
+
+    expect(screen.getByPlaceholderText(/enter task title/i)).toHaveValue("");
+    expect(screen.getByPlaceholderText(/enter task description/i)).toHaveValue(
+      "",
+    );
+    expect(screen.getByDisplayValue("To-do")).toBeInTheDocument();
   });
 
-  test('updates form fields when user types', async () => {
+  test("updates form fields when user types", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
+
     const titleInput = screen.getByPlaceholderText(/enter task title/i);
-    const descriptionInput = screen.getByPlaceholderText(/enter task description/i);
-    
-    await userEvent.type(titleInput, 'Test Task');
-    await userEvent.type(descriptionInput, 'Test Description');
-    
-    expect(titleInput).toHaveValue('Test Task');
-    expect(descriptionInput).toHaveValue('Test Description');
+    const descriptionInput = screen.getByPlaceholderText(
+      /enter task description/i,
+    );
+
+    await userEvent.type(titleInput, "Test Task");
+    await userEvent.type(descriptionInput, "Test Description");
+
+    expect(titleInput).toHaveValue("Test Task");
+    expect(descriptionInput).toHaveValue("Test Description");
   });
 
-  test('updates status when selected', async () => {
+  test("updates status when selected", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
-    const statusSelect = screen.getByDisplayValue('To-do');
-    await userEvent.selectOptions(statusSelect, 'in progress');
-    
-    expect(statusSelect).toHaveValue('in progress');
+
+    const statusSelect = screen.getByDisplayValue("To-do");
+    await userEvent.selectOptions(statusSelect, "in progress");
+
+    expect(statusSelect).toHaveValue("in progress");
   });
 
-  test('calls onHide when cancel button is clicked', async () => {
+  test("calls onHide when cancel button is clicked", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
-    const cancelButton = screen.getByText('Cancel');
+
+    const cancelButton = screen.getByText("Cancel");
     await userEvent.click(cancelButton);
-    
+
     expect(defaultProps.onHide).toHaveBeenCalledTimes(1);
   });
 
-  test('calls onHide when close button is clicked', async () => {
+  test("calls onHide when close button is clicked", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
+
     // Click outside the modal to close it or press Escape
-    await userEvent.keyboard('{Escape}');
-    
+    await userEvent.keyboard("{Escape}");
+
     expect(defaultProps.onHide).toHaveBeenCalledTimes(1);
   });
 
-  test('submits form with correct data using MSW', async () => {
+  test("submits form with correct data using MSW", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
+
     // Fill out the form
-    await userEvent.type(screen.getByPlaceholderText(/enter task title/i), 'New Task');
-    await userEvent.type(screen.getByPlaceholderText(/enter task description/i), 'Task Description');
-    await userEvent.selectOptions(screen.getByDisplayValue('To-do'), 'in progress');
-    
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task title/i),
+      "New Task",
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task description/i),
+      "Task Description",
+    );
+    await userEvent.selectOptions(
+      screen.getByDisplayValue("To-do"),
+      "in progress",
+    );
+
     // Submit the form
-    const submitButton = screen.getByText('Create Task');
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     // Wait for form submission to complete
     await waitFor(() => {
       expect(defaultProps.onTaskAdded).toHaveBeenCalledTimes(1);
@@ -104,108 +121,129 @@ describe('AddTaskForm', () => {
     });
   });
 
-  test('shows loading state during form submission', async () => {
+  test("shows loading state during form submission", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
-    await userEvent.type(screen.getByPlaceholderText(/enter task title/i), 'New Task');
-    
-    const submitButton = screen.getByText('Create Task');
+
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task title/i),
+      "New Task",
+    );
+
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     // Should show loading state
-    expect(screen.getByText('Creating...')).toBeInTheDocument();
+    expect(screen.getByText("Creating...")).toBeInTheDocument();
     expect(submitButton).toBeDisabled();
   });
 
-  test('prevents submission with empty title', async () => {
+  test("prevents submission with empty title", async () => {
     render(<AddTaskForm {...defaultProps} />);
 
     // Submit the form without entering any title (field should be empty by default)
-    const submitButton = screen.getByText('Create Task');
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     // Wait for error to appear (the backend should reject empty title)
     await waitFor(() => {
       expect(screen.getByText(/failed to create task/i)).toBeInTheDocument();
     });
-    
-    // Despite the error, if the backend returned a task (due to MSW behavior), 
+
+    // Despite the error, if the backend returned a task (due to MSW behavior),
     // the callbacks might still be called - this is the current behavior
     // The test passes if error is shown regardless of callback status
-  });  test('handles authentication error', async () => {
-    localStorage.removeItem('authToken');
-    
+  });
+  test("handles authentication error", async () => {
+    localStorage.removeItem("authToken");
+
     render(<AddTaskForm {...defaultProps} />);
-    
-    await userEvent.type(screen.getByPlaceholderText(/enter task title/i), 'New Task');
-    
-    const submitButton = screen.getByText('Create Task');
+
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task title/i),
+      "New Task",
+    );
+
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/no auth token found/i)).toBeInTheDocument();
     });
   });
 
-  test('resets form after successful submission', async () => {
+  test("resets form after successful submission", async () => {
     render(<AddTaskForm {...defaultProps} />);
-    
+
     const titleInput = screen.getByPlaceholderText(/enter task title/i);
-    const descriptionInput = screen.getByPlaceholderText(/enter task description/i);
-    
-    await userEvent.type(titleInput, 'Test Task');
-    await userEvent.type(descriptionInput, 'Test Description');
-    
-    const submitButton = screen.getByText('Create Task');
+    const descriptionInput = screen.getByPlaceholderText(
+      /enter task description/i,
+    );
+
+    await userEvent.type(titleInput, "Test Task");
+    await userEvent.type(descriptionInput, "Test Description");
+
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     await waitFor(() => {
       expect(defaultProps.onTaskAdded).toHaveBeenCalled();
     });
-    
+
     // Form should be reset
-    expect(titleInput).toHaveValue('');
-    expect(descriptionInput).toHaveValue('');
-    expect(screen.getByDisplayValue('To-do')).toBeInTheDocument();
+    expect(titleInput).toHaveValue("");
+    expect(descriptionInput).toHaveValue("");
+    expect(screen.getByDisplayValue("To-do")).toBeInTheDocument();
   });
 
-  test('displays error message on API failure', async () => {
+  test("displays error message on API failure", async () => {
     // Mock a failed response by using invalid token
-    localStorage.setItem('authToken', 'invalid-token');
-    
+    localStorage.setItem("authToken", "invalid-token");
+
     render(<AddTaskForm {...defaultProps} />);
-    
-    await userEvent.type(screen.getByPlaceholderText(/enter task title/i), 'Test Task');
-    
-    const submitButton = screen.getByText('Create Task');
+
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task title/i),
+      "Test Task",
+    );
+
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     await waitFor(() => {
       // The form should handle the error - check for any error display or that the callback wasn't called
       expect(defaultProps.onTaskAdded).not.toHaveBeenCalled();
     });
   });
 
-  test('form submission stops loading state on error', async () => {
-    localStorage.setItem('authToken', 'invalid-token');
-    
+  test("form submission stops loading state on error", async () => {
+    localStorage.setItem("authToken", "invalid-token");
+
     render(<AddTaskForm {...defaultProps} />);
-    
-    await userEvent.type(screen.getByPlaceholderText(/enter task title/i), 'Test Task');
-    
-    const submitButton = screen.getByText('Create Task');
+
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter task title/i),
+      "Test Task",
+    );
+
+    const submitButton = screen.getByText("Create Task");
     await userEvent.click(submitButton);
-    
+
     // Wait for form to process - use more time since it may take longer to process errors
-    await waitFor(() => {
-      expect(defaultProps.onTaskAdded).not.toHaveBeenCalled();
-    }, { timeout: 3000 });
-    
+    await waitFor(
+      () => {
+        expect(defaultProps.onTaskAdded).not.toHaveBeenCalled();
+      },
+      { timeout: 3000 },
+    );
+
     // The form might still be in loading state briefly, so let's wait a bit more
-    await waitFor(() => {
-      expect(screen.queryByText('Creating...')).not.toBeInTheDocument();
-    }, { timeout: 1000 });
-    
+    await waitFor(
+      () => {
+        expect(screen.queryByText("Creating...")).not.toBeInTheDocument();
+      },
+      { timeout: 1000 },
+    );
+
     expect(submitButton).not.toBeDisabled();
   });
 });

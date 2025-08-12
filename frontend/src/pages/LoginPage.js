@@ -1,8 +1,8 @@
-import React from 'react';
-import BrandingPanel from '../components/auth/BrandingPanel';
-import LoginForm from '../components/auth/LoginForm';
-import '../styles/auth.css';
-import { useLogin } from '../hooks/useLogin';
+import React from "react";
+import BrandingPanel from "../components/auth/BrandingPanel";
+import LoginForm from "../components/auth/LoginForm";
+import "../styles/auth.css";
+import { useLogin } from "../hooks/useLogin";
 
 export function LoginPage() {
   const {
@@ -15,7 +15,7 @@ export function LoginPage() {
     loginSuccess,
     setError,
     setLoginSuccess,
-    clearFieldError
+    clearFieldError,
   } = useLogin();
 
   return (
@@ -24,9 +24,9 @@ export function LoginPage() {
       <div className="login-panel d-flex align-items-center justify-content-center">
         <LoginForm
           email={formData.email}
-          setEmail={(value) => updateField('email', value)}
+          setEmail={(value) => updateField("email", value)}
           password={formData.password}
-          setPassword={(value) => updateField('password', value)}
+          setPassword={(value) => updateField("password", value)}
           isLoading={isLoading}
           error={error}
           setError={setError}

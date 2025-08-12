@@ -1,14 +1,21 @@
-import React from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import React from "react";
+import { Form, InputGroup } from "react-bootstrap";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const iconMap = {
-  username: 'bi-person',
-  email: 'bi-envelope',
-  password: 'bi-lock',
+  username: "bi-person",
+  email: "bi-envelope",
+  password: "bi-lock",
 };
 
-export default function InputField({ type, placeholder, value, onChange, icon, error }) {
+export default function InputField({
+  type,
+  placeholder,
+  value,
+  onChange,
+  icon,
+  error,
+}) {
   return (
     <div className="input-wrapper">
       <i className={`bi ${iconMap[icon]} input-icon`} />
@@ -21,9 +28,7 @@ export default function InputField({ type, placeholder, value, onChange, icon, e
         className="input-with-icon"
         autoComplete="off"
       />
-      <Form.Control.Feedback type="invalid">
-        {error}
-      </Form.Control.Feedback>
+      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
     </div>
   );
 }

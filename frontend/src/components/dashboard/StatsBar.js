@@ -1,6 +1,6 @@
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import StatCard from './StatCard';
+import React from "react";
+import { Row, Col } from "react-bootstrap";
+import StatCard from "./StatCard";
 
 function StatsBar({ stats }) {
   return (
