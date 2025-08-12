@@ -88,7 +88,14 @@ exports.updateTask = async (req, res) => {
       // some weird local time reason makes it necessary to substract this number to get accurate
       // time, this is 3hours in MS
       // without - there will be a time difference of 3 hours
-      const durationMs = Math.floor((nowUTC - createdAtUTC)) - 10800000;
+      // const durationMs = Math.floor((nowUTC - createdAtUTC)) - 10800000;
+
+      /*
+        For some reason when the environment is the host machine (not container), the time is defaulted to 3hours in MS
+        however when it exists in the container, it is accurate, so keep it as below if running in a containerized env
+      */
+
+      const durationMs = Math.floor((nowUTC - createdAtUTC));
       
       // Convert milliseconds to PostgreSQL interval format
       const totalSeconds = Math.floor(durationMs / 1000);

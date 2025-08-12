@@ -1,6 +1,6 @@
 projectKey=trackr
-serverUrl=http://localhost:9000
+serverUrl=http://localhost:9500
 serverVersion=25.7.0.110598
-dashboardUrl=http://localhost:9000/dashboard?id=trackr
-ceTaskId=02d1d9e6-a50b-4087-8fe3-e6d81a5b843d
-ceTaskUrl=http://localhost:9000/api/ce/task?id=02d1d9e6-a50b-4087-8fe3-e6d81a5b843d
+dashboardUrl=http://localhost:9500/dashboard?id=trackr
+ceTaskId=a1ec6ec5-cc58-4d88-b13b-7905f2a39a2f
+ceTaskUrl=http://localhost:9500/api/ce/task?id=a1ec6ec5-cc58-4d88-b13b-7905f2a39a2f
