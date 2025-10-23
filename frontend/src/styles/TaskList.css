@@ -1,0 +1,120 @@
+/* Main card styling */
+.task-list-card {
+  border-radius: 12px;
+  margin: 1rem 0;
+  /* overflow: hidden; */
+}
+
+/* Header styling */
+.task-list-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.25rem;
+}
+
+.task-list-title {
+  color: #333;
+  font-weight: 600;
+}
+
+.task-filter-select {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* Table styling */
+.task-table-header {
+  background-color: #f8f9fa;
+}
+
+.task-th {
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #e9ecef;
+  padding: 1rem;
+}
+
+.task-row:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.task-table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+/* Status badge customization */
+.task-status-badge {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+.task-status-badge-done {
+  font-size: 0.875rem;
+  background-color: #156d08;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+.task-status-badge-in-progress {
+  font-size: 0.875rem;
+  background-color: #6d5f08;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+.task-status-badge-to-do {
+  font-size: 0.875rem;
+  background-color: #525251;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+/* Empty state */
+.task-empty-state {
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .task-list-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .task-filter-select {
+    width: 100% !important;
+  }
+}
+
+.task-row.status-done {
+  background-color: #d4edda !important;
+  border-left: 4px solid #28a745;
+}
+
+.task-row.status-in-progress {
+  background-color: #fff3cd !important;
+  border-left: 4px solid #ffc107;
+}
+
+.task-row.status-to-do {
+  background-color: #f8f9fa !important;
+  border-left: 4px solid #6c757d;
+}
+
+/* On hover, darken the background slightly */
+.task-row.status-done:hover {
+  background-color: #c3e6cb !important;
+}
+
+.task-row.status-in-progress:hover {
+  background-color: #ffeaa7 !important;
+}
+
+.task-row.status-to-do:hover {
+  background-color: #e9ecef !important;
+}

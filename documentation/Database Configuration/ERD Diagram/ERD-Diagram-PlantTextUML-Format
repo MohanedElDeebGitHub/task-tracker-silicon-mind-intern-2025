@@ -1,0 +1,57 @@
+@startuml
+
+' Hides the default PlantUML footer
+
+hide footbox
+
+' Sets a title for the diagram
+
+title User-Task Relationship ERD
+
+' Defines the users entity with its attributes
+
+entity "users" {
+
+  + id
+
+  --
+
+  username
+
+  email
+
+  password
+
+  created_at
+
+}
+
+' Defines the tasks entity with its attributes
+
+entity "tasks" {
+
+  + id
+
+  --
+
+  # fk_user_id
+
+  title
+
+  status
+
+  description
+
+  total_duration
+
+  created_at
+
+}
+
+' Establishes the one-to-many relationship between users and tasks
+
+' A user can have zero or many tasks.
+
+users ||--o{ tasks
+
+@enduml
